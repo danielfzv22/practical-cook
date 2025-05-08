@@ -5,8 +5,6 @@ import RecipeContext from "../../../context/RecipeContext";
 import { createRecipe } from "../../../http";
 
 export default function RecipeTitleSection() {
-
-  
   const [errorUpdatingPlaces, seterrorUpdatingPlaces] = useState();
   const ctxRecipe = useContext(RecipeContext);
   const newRecipe = ctxRecipe.recipe;
@@ -14,9 +12,12 @@ export default function RecipeTitleSection() {
   async function handleCreateRecipe(recipe) {
     console.log(recipe);
     try {
-      await createRecipe({name: recipe.title, description: recipe.description});
+      await createRecipe({
+        name: recipe.title,
+        description: recipe.description,
+      });
     } catch (error) {
-        seterrorUpdatingPlaces({
+      seterrorUpdatingPlaces({
         message: error.message || "Failed to create recipe.",
       });
     }

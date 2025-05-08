@@ -5,6 +5,7 @@ import backgroundImage from "./assets/choppingBoard.jpg";
 import Recipe from "./components/Recipes/Recipe.jsx";
 import { RecipeContextProvider } from "./context/RecipeContext.jsx";
 import { fetchRecipes } from "./http";
+import { Provider } from "./components/UI/provider.jsx";
 
 function App() {
   const [isFetching, setIsFetching] = useState(true);
@@ -35,27 +36,28 @@ function App() {
   }
 
   return (
-    <RecipeContextProvider>
-      <Navbar />
-      <div
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: "cover",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <RecipeList
-          title="Recipes"
-          recipes={recipes}
-          isLoading={isFetching}
-          loadingText="Loading..."
-          fallbackText="No recipes available."
-        />
-        <Recipe />
-      </div>
-    </RecipeContextProvider>
+    <Provider>
+      <RecipeContextProvider>
+        <Navbar />
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center ",
+            justifyContent: "space-between",
+          }}
+        >
+          <RecipeList
+            title="Recipes"
+            recipes={recipes}
+            isLoading={isFetching}
+            loadingText="Loading..."
+            fallbackText="No recipes available."
+          />
+          {/* <Recipe /> */}
+        </div>
+      </RecipeContextProvider>
+    </Provider>
   );
 }
 

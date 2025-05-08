@@ -28,7 +28,7 @@ export async function updateUserPlaces(places) {
 
 export async function updateRecipeGeneral(recipe) {
   console.log(JSON.stringify(recipe));
-  const response = await fetch("http://localhost:5219/Recipe", {
+  const response = await fetch("http://localhost:5086/recipes", {
     method: "PUT",
     body: JSON.stringify(recipe),
     headers: {
@@ -46,7 +46,7 @@ export async function updateRecipeGeneral(recipe) {
 }
 
 export async function createRecipe(recipe) {
-  const response = await fetch("http://localhost:5219/Recipe", {
+  const response = await fetch("http://localhost:5086/recipes", {
     method: "POST",
     body: JSON.stringify(recipe),
     headers: {
@@ -56,7 +56,7 @@ export async function createRecipe(recipe) {
 }
 
 export async function fetchRecipes() {
-  const response = await fetch("http://localhost:5219/Recipe");
+  const response = await fetch("http://localhost:5086/recipes");
   const resData = await response.json();
   if (!response.ok) {
     throw new Error("Failed to fetch recipes");
@@ -67,7 +67,7 @@ export async function fetchRecipes() {
 
 
 export async function fetchRecipeById(id) {
-  const response = await fetch(`http://localhost:5219/Recipe/${id}`);
+  const response = await fetch(`http://localhost:5086/recipes/${id}`);
   const resData = await response.json();
   if (!response.ok) {
     throw new Error("Failed to fetch recipe " + id);
