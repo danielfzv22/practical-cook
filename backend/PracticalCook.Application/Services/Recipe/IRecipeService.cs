@@ -16,6 +16,8 @@ namespace PracticalCook.Application.Services.RecipeService
 
         Task<Response<GetRecipeDto>> AddRecipe(AddRecipeDto newRecipe);
 
+        Task<Response<List<GetRecipeDto>>> AddMultipleRecipes(List<AddRecipeDto> newRecipes);
+
         Task<Response<GetRecipeDto>> UpdateRecipe(UpdateRecipeDto updatedRecipe);
 
         Task<Response<GetRecipeDto>> DeleteRecipe(int id);

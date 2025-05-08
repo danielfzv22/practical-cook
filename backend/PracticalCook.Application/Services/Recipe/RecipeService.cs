@@ -35,6 +35,28 @@ namespace PracticalCook.Application.Services.RecipeService
             return response;
         }
 
+        public async Task<Response<List<GetRecipeDto>>> AddMultipleRecipes(List<AddRecipeDto> newRecipes)
+        {
+            var response = new Response<List<GetRecipeDto>>();
+
+            try
+            {
+                List<Recipe> recipesToAdd = [];
+                foreach (var recipe in newRecipes)
+                {
+                    recipesToAdd.Add(_mapper.Map<Recipe>(recipe));
+                }
+
+                await _recipeRepository.AddMultipleRecipes(recipesToAdd);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
         public async Task<Response<GetRecipeDto>> DeleteRecipe(int id)
         {
             var response = new Response<GetRecipeDto>();

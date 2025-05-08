@@ -12,8 +12,8 @@ namespace PracticalCook.Infrastructure.Repositories
 
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly DataContext _context;
-        private readonly DbSet<T> _dbSet;
+        protected readonly DataContext _context;
+        protected readonly DbSet<T> _dbSet;
 
         public GenericRepository(DataContext context)
         {

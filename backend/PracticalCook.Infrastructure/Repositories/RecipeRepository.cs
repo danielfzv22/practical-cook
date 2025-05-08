@@ -1,4 +1,5 @@
-﻿using PracticalCook.Application.Services.IngredientService;
+﻿using Microsoft.EntityFrameworkCore;
+using PracticalCook.Application.Services.IngredientService;
 using PracticalCook.Application.Services.RecipeService;
 using PracticalCook.Infrastructure.DataAccess;
 using PraticalCook.Domain.Entities;
@@ -12,24 +13,85 @@ namespace PracticalCook.Infrastructure.Repositories
 {
     public class RecipeRepository(DataContext context) : GenericRepository<Recipe>(context), IRecipeRepository
     {
-        public Task<Recipe> AddIngredientToRecipe(RecipeIngredient recipeIngredient)
+        public async Task<Recipe> AddIngredientToRecipe(RecipeIngredient recipeIngredient)
         {
-            throw new NotImplementedException();
+            var recipe = await _dbSet
+                .Include(r => r.RecipeIngredients)
+                .FirstOrDefaultAsync(r => r.Id == recipeIngredient.RecipeId);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            var exists = recipe.RecipeIngredients.Any(ri =>
+                ri.IngredientId == recipeIngredient.IngredientId);
+
+            if (exists)
+                throw new Exception("Ingredient already added to recipe");
+
+            recipe.RecipeIngredients.Add(recipeIngredient);
+
+            await context.SaveChangesAsync();
+
+            return recipe;
         }
 
-        public Task<Recipe> AddStepToRecipe(RecipeStep recipeStep)
+        public async Task<List<Recipe>> AddMultipleRecipes(List<Recipe> recipes)
         {
-            throw new NotImplementedException();
+            _dbSet.AddRange(recipes);
+            await context.SaveChangesAsync();
+            return recipes;
         }
 
-        public Task<Recipe> AddUtensilToRecipe(RecipeUtensil recipeUtensil)
+        public async Task<Recipe> AddStepToRecipe(RecipeStep recipeStep)
         {
-            throw new NotImplementedException();
+            var recipe = await _dbSet
+                .Include(r => r.RecipeSteps)
+                .FirstOrDefaultAsync(r => r.Id == recipeStep.RecipeId);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            recipe.RecipeSteps.Add(recipeStep);
+            await context.SaveChangesAsync();
+            return recipeStep.Recipe;
         }
 
-        public Task<Recipe> GetRecipeWithDetails(int id)
+        public async Task<Recipe> AddUtensilToRecipe(RecipeUtensil recipeUtensil)
         {
-            throw new NotImplementedException();
+            var recipe = await _dbSet
+                .Include(r => r.RecipeUtensils)
+                .FirstOrDefaultAsync(r => r.Id == recipeUtensil.RecipeId);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            var exists = recipe.RecipeUtensils.Any(ru =>
+                ru.UtensilId == recipeUtensil.UtensilId);
+
+            if (exists)
+                throw new Exception("Utensil already added to recipe");
+
+            recipe.RecipeUtensils.Add(recipeUtensil);
+            await context.SaveChangesAsync();
+
+            return recipeUtensil.Recipe;
+        }
+
+        public async Task<Recipe> GetRecipeWithDetails(int id)
+        {
+            var recipe = await _dbSet
+                .Include(r => r.RecipeIngredients)
+                    .ThenInclude(ri => ri.Ingredient)
+                .Include(r => r.RecipeUtensils)
+                    .ThenInclude(ru => ru.Utensil)
+                .Include(r => r.RecipeSteps)
+                    .ThenInclude(rs => rs.Step)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            return recipe;
         }
     }
 }

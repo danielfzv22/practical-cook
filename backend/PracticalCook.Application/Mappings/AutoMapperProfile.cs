@@ -20,12 +20,6 @@ namespace PracticalCook.Application.Mappings
             CreateMap<Recipe, GetRecipeDto>();
             CreateMap<AddRecipeDto, Recipe>();
 
-            CreateMap<AddRecipeIngredientDto, RecipeIngredient>();
-            CreateMap<RecipeIngredient, GetRecipeIngredientDto>();
-
-            CreateMap<Step, GetStepDto>();
-            CreateMap<AddStepDto, Step>();
-
             CreateMap<Ingredient, GetIngredientDto>();
             CreateMap<AddIngredientDto, Ingredient>();
 
@@ -34,6 +28,15 @@ namespace PracticalCook.Application.Mappings
 
             CreateMap<Step, GetStepDto>();
             CreateMap<AddStepDto, Step>();
+
+            CreateMap<AddRecipeIngredientDto, RecipeIngredient>();
+            CreateMap<RecipeIngredient, GetRecipeIngredientDto>();
+
+            CreateMap<AddRecipeUtensilDto, RecipeUtensil>();
+            CreateMap<RecipeUtensil, GetRecipeUtensilDto>();
+
+            CreateMap<AddRecipeStepDto, RecipeStep>();
+            CreateMap<RecipeStep, GetRecipeStepDto>();
         }
     }
 }

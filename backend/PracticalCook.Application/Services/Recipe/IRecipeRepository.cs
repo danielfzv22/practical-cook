@@ -11,6 +11,8 @@ namespace PracticalCook.Application.Services.RecipeService
     {
         Task<Recipe> GetRecipeWithDetails(int id);
 
+        Task<List<Recipe>> AddMultipleRecipes(List<Recipe> recipes);
+
         Task<Recipe> AddIngredientToRecipe(RecipeIngredient recipeIngredient);
 
         Task<Recipe> AddUtensilToRecipe(RecipeUtensil recipeUtensil);
