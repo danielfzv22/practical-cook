@@ -119,20 +119,6 @@ namespace PracticalCook.Infrastructure.DataAccess
                 .HasForeignKey(ri => ri.IngredientId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<RecipeStepUtensil>()
-                .HasKey(rs => new { rs.RecipeStepId, rs.UtensilId });
-
-            modelBuilder.Entity<RecipeStepUtensil>()
-                .HasOne(rs => rs.RecipeStep)
-                .WithMany(rs => rs.StepUtensils)
-                .HasForeignKey(rs => rs.RecipeStepId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<RecipeStepUtensil>()
-                .HasOne(rs => rs.Utensil)
-                .WithMany()
-                .HasForeignKey(rs => rs.UtensilId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

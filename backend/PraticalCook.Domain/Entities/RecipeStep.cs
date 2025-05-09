@@ -28,8 +28,6 @@
         private RecipeStep()
         {
             // Parameterless constructor for EF Core
-        }
-
-        public ICollection<RecipeStepUtensil> StepUtensils { get; set; } = [];
+        } 
     }
 }

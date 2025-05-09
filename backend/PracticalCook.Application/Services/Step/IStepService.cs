@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PracticalCook.Application.Common.Responses;
+using PracticalCook.Application.Dtos.Recipe;
 using PracticalCook.Application.Dtos.Step;
 
 namespace PracticalCook.Application.Services.StepService
@@ -18,7 +19,5 @@ namespace PracticalCook.Application.Services.StepService
         Task<Response<GetStepDto>> UpdateStep(UpdateStepDto updatedStep);
 
         Task<Response<GetStepDto>> DeleteStep(int id);
-
-
     }
 }

@@ -1,4 +1,6 @@
-﻿using PracticalCook.Application.Services.StepService;
+﻿using Microsoft.EntityFrameworkCore;
+using PracticalCook.Application.Dtos.Recipe;
+using PracticalCook.Application.Services.StepService;
 using PracticalCook.Infrastructure.DataAccess;
 using PraticalCook.Domain.Entities;
 using System;

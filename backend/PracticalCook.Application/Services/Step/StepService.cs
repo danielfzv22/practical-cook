@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using PracticalCook.Application.Common.Responses;
+using PracticalCook.Application.Dtos.Recipe;
 using PracticalCook.Application.Dtos.Step;
 using PraticalCook.Domain.Entities;
 

@@ -6,7 +6,7 @@ using PracticalCook.Application.Services.StepService;
 namespace PracticalCook.WebApi.Controllers
 {
     [ApiController]
-    [Route("Recipe/[controller]")]
+    [Route("steps")]
     public class StepController(IStepService stepService, ILogger<StepController> logger) : ControllerBase
     {
         [HttpGet]
@@ -62,6 +62,7 @@ namespace PracticalCook.WebApi.Controllers
                 });
             }
         }
+
         [HttpPost]
         public async Task<ActionResult<Response<GetStepDto>>> AddStep([FromBody] AddStepDto newStep)
         {

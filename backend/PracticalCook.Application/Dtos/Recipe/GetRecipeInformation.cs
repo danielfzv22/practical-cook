@@ -26,10 +26,10 @@ namespace PracticalCook.Application.Dtos.Recipe
 
         public int PreparationTime { get; set; }
 
-        public List<GetStepDto>? Steps { get; set; }
+        public List<GetRecipeStepDto>? RecipeSteps { get; set; }
 
-        public List<GetRecipeIngredientDto>? Ingredients { get; set; }
+        public List<GetRecipeIngredientDto>? RecipeIngredients { get; set; }
 
-        public List<GetUtensilDto>? Utensils { get; set; }
+        public List<GetRecipeUtensilDto>? RecipeUtensils { get; set; }
     }
 }
