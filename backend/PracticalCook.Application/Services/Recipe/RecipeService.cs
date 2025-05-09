@@ -177,7 +177,7 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipeStep = _mapper.Map<RecipeStep>(newRecipeStep);
+                var recipeStep = _mapper.Map<Step>(newRecipeStep);
 
                 var recipe = await _recipeRepository.AddStepToRecipe(recipeStep);
 

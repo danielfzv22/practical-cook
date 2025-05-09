@@ -17,7 +17,7 @@ namespace PracticalCook.Application.Services.RecipeService
 
         Task<Recipe> AddUtensilToRecipe(RecipeUtensil recipeUtensil);
         
-        Task<Recipe> AddStepToRecipe(RecipeStep recipeStep);
+        Task<Recipe> AddStepToRecipe(Step recipeStep);
 
     }
 }

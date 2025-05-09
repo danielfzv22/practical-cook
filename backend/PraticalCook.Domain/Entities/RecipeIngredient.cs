@@ -7,8 +7,6 @@ namespace PraticalCook.Domain.Entities
 {
     public class RecipeIngredient
     {
-        public int Id { get; set; }
-
         public double Quantity { get; set; }
 
         public Measurement Measure { get; set; }

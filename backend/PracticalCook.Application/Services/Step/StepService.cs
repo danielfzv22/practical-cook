@@ -95,7 +95,7 @@ namespace PracticalCook.Application.Services.StepService
                 var stepToUpdate = await _stepRepository.GetByIdAsync(updatedStep.Id) ?? throw new Exception($"Step with id {updatedStep.Id} not found!");
 
                 stepToUpdate.Title = updatedStep.Title;
-                stepToUpdate.DefaultDescription = updatedStep.DefaultDescription;
+                stepToUpdate.Description = updatedStep.DefaultDescription;
 
                 await _stepRepository.UpdateAsync(stepToUpdate);
 

@@ -42,16 +42,16 @@ namespace PracticalCook.Infrastructure.Repositories
             return recipes;
         }
 
-        public async Task<Recipe> AddStepToRecipe(RecipeStep recipeStep)
+        public async Task<Recipe> AddStepToRecipe(Step recipeStep)
         {
             var recipe = await _dbSet
-                .Include(r => r.RecipeSteps)
+                .Include(r => r.Steps)
                 .FirstOrDefaultAsync(r => r.Id == recipeStep.RecipeId);
 
             if (recipe == null)
                 throw new Exception("Recipe not found");
 
-            recipe.RecipeSteps.Add(recipeStep);
+            recipe.Steps.Add(recipeStep);
             await context.SaveChangesAsync();
             return recipeStep.Recipe;
         }
@@ -84,8 +84,7 @@ namespace PracticalCook.Infrastructure.Repositories
                     .ThenInclude(ri => ri.Ingredient)
                 .Include(r => r.RecipeUtensils)
                     .ThenInclude(ru => ru.Utensil)
-                .Include(r => r.RecipeSteps)
-                    .ThenInclude(rs => rs.Step)
+                .Include(r => r.Steps)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (recipe == null)

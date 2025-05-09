@@ -24,7 +24,7 @@ namespace PracticalCook.Infrastructure.DataAccess
 
         public DbSet<RecipeUtensil> RecipeUtensils => Set<RecipeUtensil>();
 
-        public DbSet<RecipeStep> RecipeSteps => Set<RecipeStep>();
+        public DbSet<Step> RecipeSteps => Set<Step>();
 
         public DbSet<Utensil> Utensils => Set<Utensil>();
 
@@ -54,7 +54,7 @@ namespace PracticalCook.Infrastructure.DataAccess
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe>()
-                .HasMany(r => r.RecipeSteps)
+                .HasMany(r => r.Steps)
                 .WithOne()
                 .HasForeignKey(rs => rs.StepId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -83,24 +83,6 @@ namespace PracticalCook.Infrastructure.DataAccess
                 .HasForeignKey(ru => ru.UtensilId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Step>()
-                .HasKey(s => s.Id);
-
-            modelBuilder.Entity<RecipeStep>()
-                .HasKey(rs => rs.Id );
-
-            modelBuilder.Entity<RecipeStep>()
-                .HasOne(rs => rs.Recipe)
-                .WithMany(r => r.RecipeSteps)
-                .HasForeignKey(rs => rs.RecipeId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<RecipeStep>()
-                .HasOne(rs => rs.Step)
-                .WithMany()
-                .HasForeignKey(rs => rs.StepId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<Ingredient>()
                 .HasKey(i => i.Id);
 
@@ -119,6 +101,15 @@ namespace PracticalCook.Infrastructure.DataAccess
                 .HasForeignKey(ri => ri.IngredientId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
+            modelBuilder.Entity<Step>()
+                .HasKey(rs => rs.Id);
+
+            modelBuilder.Entity<Step>()
+                .HasOne(rs => rs.Recipe)
+                .WithMany(r => r.Steps)
+                .HasForeignKey(rs => rs.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

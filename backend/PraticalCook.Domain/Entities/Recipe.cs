@@ -13,7 +13,7 @@ namespace PraticalCook.Domain.Entities
 
         public string Description { get; set; } = string.Empty;
 
-        public ICollection<RecipeStep> RecipeSteps { get; set; } = [];
+        public ICollection<Step> Steps { get; set; } = [];
 
         public ICollection<RecipeIngredient> RecipeIngredients { get; set; } = [];
 

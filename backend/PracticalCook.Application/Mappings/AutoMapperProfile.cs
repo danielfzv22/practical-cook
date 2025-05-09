@@ -35,8 +35,8 @@ namespace PracticalCook.Application.Mappings
             CreateMap<AddRecipeUtensilDto, RecipeUtensil>();
             CreateMap<RecipeUtensil, GetRecipeUtensilDto>();
 
-            CreateMap<AddRecipeStepDto, RecipeStep>();
-            CreateMap<RecipeStep, GetRecipeStepDto>();
+            CreateMap<AddRecipeStepDto, Step>();
+            CreateMap<Step, GetRecipeStepDto>();
 
 
         }
