@@ -10,8 +10,6 @@ namespace PracticalCook.Application.Dtos.Recipe
     {
         public int IngredientId { get; set; }
 
-        public int RecipeId { get; set; }
-
         public double Quantity { get; set; }
 
         public Measurement Measure { get; set; }

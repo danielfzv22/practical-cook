@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using PracticalCook.Application.Dtos.Ingredient;
 using PracticalCook.Application.Dtos.Recipe;
-using PracticalCook.Application.Dtos.Step;
 using PracticalCook.Application.Dtos.Utensil;
 using PraticalCook.Domain.Entities;
 
@@ -15,8 +10,6 @@ namespace PracticalCook.Application.Mappings
     {
         public AutoMapperProfile()
         {
-            CreateMap<Recipe, GetRecipeInformationDto>();
-
             CreateMap<Recipe, GetRecipeDto>();
             CreateMap<AddRecipeDto, Recipe>();
 
@@ -26,8 +19,8 @@ namespace PracticalCook.Application.Mappings
             CreateMap<Utensil, GetUtensilDto>();
             CreateMap<AddUtensilDto, Utensil>();
 
-            CreateMap<Step, GetStepDto>();
-            CreateMap<AddStepDto, Step>();
+            CreateMap<Step, GetRecipeStepDto>();
+            CreateMap<AddRecipeStepDto, Step>();
 
             CreateMap<AddRecipeIngredientDto, RecipeIngredient>();
             CreateMap<RecipeIngredient, GetRecipeIngredientDto>();
@@ -37,8 +30,6 @@ namespace PracticalCook.Application.Mappings
 
             CreateMap<AddRecipeStepDto, Step>();
             CreateMap<Step, GetRecipeStepDto>();
-
-
         }
     }
 }

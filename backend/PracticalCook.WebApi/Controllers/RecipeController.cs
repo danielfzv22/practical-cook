@@ -37,7 +37,7 @@ namespace PracticalCook.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Response<GetRecipeInformationDto>>> GetRecipeById(int id)
+        public async Task<ActionResult<Response<GetRecipeDto>>> GetRecipeById(int id)
         {
             logger.LogInformation("GET /recipes/{Id} - Fetching recipe", id);
             try
@@ -55,7 +55,7 @@ namespace PracticalCook.WebApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "GET /recipes/{Id} - Error fetching recipe", id);
-                return StatusCode(500, new Response<GetRecipeInformationDto>
+                return StatusCode(500, new Response<GetRecipeDto>
                 {
                     Success = false,
                     Message = "Internal server error."
@@ -163,13 +163,13 @@ namespace PracticalCook.WebApi.Controllers
             }
         }
 
-        [HttpPost("ingredients")]
-        public async Task<ActionResult<Response<GetRecipeDto>>> AddIngredientToRecipe(AddRecipeIngredientDto dto)
+        [HttpPost("{recipeId}/ingredients")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> AddIngredientToRecipe(int recipeId, [FromBody] AddRecipeIngredientDto dto)
         {
-            logger.LogInformation("POST /recipes/Ingredients - Adding ingredient {IngredientId} to recipe {RecipeId}", dto.IngredientId, dto.RecipeId);
+            logger.LogInformation("POST /recipes/Ingredients - Adding ingredient {IngredientId} to recipe {RecipeId}", dto.IngredientId, recipeId);
             try
             {
-                var response = await recipeService.AddIngredientToRecipe(dto);
+                var response = await recipeService.AddIngredientToRecipe(recipeId, dto);
                 logger.LogInformation("POST /recipes/Ingredients - Ingredient added to recipe");
                 return Ok(response);
             }
@@ -184,13 +184,40 @@ namespace PracticalCook.WebApi.Controllers
             }
         }
 
-        [HttpPost("utensils")]
-        public async Task<ActionResult<Response<GetRecipeDto>>> AddUtensilToRecipe(AddRecipeUtensilDto dto)
+        [HttpDelete("{recipeId}/ingredients/{ingredientId}")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> RemoveIngredientFromRecipe(int recipeId, int ingredientId)
         {
-            logger.LogInformation("POST /recipes/Utensils - Adding utensil {UtensilId} to recipe {RecipeId}", dto.UtensilId, dto.RecipeId);
+            logger.LogInformation("DELETE /recipes/{RecipeId}/ingredients/{IngredientId} - Removing Ingredient from recipe", recipeId, ingredientId);
             try
             {
-                var response = await recipeService.AddUtensilToRecipe(dto);
+                var response = await recipeService.RemoveIngredientFromRecipe(recipeId, ingredientId);
+                if (response.Data is null)
+                {
+                    logger.LogWarning("DELETE /recipes/{RecipeId}/ingredients/{IngredientId} - Recipe not found", recipeId, ingredientId);
+                    return NotFound(response);
+                }
+
+                logger.LogInformation("DELETE /recipes/{RecipeId}/ingredients/{IngredientId} - Ingredient removed from Recipe", recipeId, ingredientId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "DELETE /recipes/{RecipeId}/ingredients/{IngredientId} - Error removing ingredient from Recipe", recipeId, ingredientId);
+                return StatusCode(500, new Response<GetRecipeDto>
+                {
+                    Success = false,
+                    Message = "Internal server error."
+                });
+            }
+        }
+
+        [HttpPost("{recipeId}/utensils")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> AddUtensilToRecipe(int recipeId, [FromBody] AddRecipeUtensilDto dto)
+        {
+            logger.LogInformation("POST /recipes/Utensils - Adding utensil {UtensilId} to recipe {RecipeId}", dto.UtensilId, recipeId);
+            try
+            {
+                var response = await recipeService.AddUtensilToRecipe(recipeId, dto);
                 logger.LogInformation("POST /recipes/Utensils - Utensil added to recipe");
                 return Ok(response);
             }
@@ -205,13 +232,40 @@ namespace PracticalCook.WebApi.Controllers
             }
         }
 
-        [HttpPost("step")]
-        public async Task<ActionResult<Response<GetRecipeDto>>> AddStepToRecipe(AddRecipeStepDto dto)
+        [HttpDelete("{recipeId}/utensils/{utensilId}")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> RemoveUtensilFromRecipe(int recipeId, int utensilId)
         {
-            logger.LogInformation("POST /recipes/Step - Adding step to recipe {RecipeId}", dto.RecipeId);
+            logger.LogInformation("DELETE /recipes/{RecipeId}/utensils/{UtensilId} - Removing Utensil from recipe", recipeId, utensilId);
             try
             {
-                var response = await recipeService.AddStepToRecipe(dto);
+                var response = await recipeService.RemoveUtensilFromRecipe(recipeId, utensilId);
+                if (response.Data is null)
+                {
+                    logger.LogWarning("DELETE /recipes/{RecipeId}/utensils/{UtensilId} - Recipe not found", recipeId, utensilId);
+                    return NotFound(response);
+                }
+
+                logger.LogInformation("DELETE /recipes/{RecipeId}/utensils/{UtensilId} - Utensil removed from Recipe", recipeId, utensilId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "DELETE /recipes/{RecipeId}/utensils/{UtensilId} - Error removing utensil from Recipe", recipeId, utensilId);
+                return StatusCode(500, new Response<GetRecipeDto>
+                {
+                    Success = false,
+                    Message = "Internal server error."
+                });
+            }
+        }
+
+        [HttpPost("{recipeId}/steps")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> AddStepToRecipe(int recipeId, [FromBody] AddRecipeStepDto dto)
+        {
+            logger.LogInformation("POST /recipes/Step - Adding step to recipe {RecipeId}", recipeId);
+            try
+            {
+                var response = await recipeService.AddStepToRecipe(recipeId, dto);
                 logger.LogInformation("POST /recipes/Step - Step added to recipe");
                 return Ok(response);
             }
@@ -224,6 +278,60 @@ namespace PracticalCook.WebApi.Controllers
                     Message = "Internal server error."
                 });
             }
+        }
+
+        [HttpDelete("{recipeId}/steps/{stepId}")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> RemoveStepFromRecipe(int recipeId, int stepId)
+        {
+            logger.LogInformation("DELETE /recipes/{RecipeId}/steps/{StepId} - Removing Step from recipe", recipeId, stepId);
+            try
+            {
+                var response = await recipeService.RemoveStepFromRecipe(recipeId, stepId);
+                if (response.Data is null)
+                {
+                    logger.LogWarning("DELETE /recipes/{RecipeId}/steps/{StepId} - Recipe not found", recipeId, stepId);
+                    return NotFound(response);
+                }
+
+                logger.LogInformation("DELETE /recipes/{RecipeId}/steps/{StepId} - Step removed from Recipe", recipeId, stepId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "DELETE /recipes/{RecipeId}/steps/{StepId} - Error removing step from Recipe", recipeId, stepId);
+                return StatusCode(500, new Response<GetRecipeDto>
+                {
+                    Success = false,
+                    Message = "Internal server error."
+                });
+            }
+        }
+
+        [HttpPut("{recipeId}/steps")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> UpdateStepInRecipe(int recipeId, [FromBody] UpdateRecipeStepDto dto)
+        {
+            logger.LogInformation("PUT /recipes/{RecipeId}/steps - Updating step in recipe", recipeId);
+            try
+            {
+                var response = await recipeService.UpdateStepInRecipe(recipeId, dto);
+                if (response.Data is null)
+                {
+                    logger.LogWarning("PUT /recipes/{RecipeId}/steps - Recipe not found", recipeId);
+                    return NotFound(response);
+                }
+                logger.LogInformation("PUT /recipes/{RecipeId}/steps - Step updated in Recipe", recipeId);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "PUT /recipes/{RecipeId}/steps - Error updating step in Recipe", recipeId);
+                return StatusCode(500, new Response<GetRecipeDto>
+                {
+                    Success = false,
+                    Message = "Internal server error."
+                });
+            }
+
         }
     }
 }

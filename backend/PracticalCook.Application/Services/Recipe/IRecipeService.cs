@@ -12,7 +12,7 @@ namespace PracticalCook.Application.Services.RecipeService
     {
         Task<Response<List<GetRecipeDto>>> GetRecipes();
 
-        Task<Response<GetRecipeInformationDto>> GetRecipeById(int id);
+        Task<Response<GetRecipeDto>> GetRecipeById(int id);
 
         Task<Response<GetRecipeDto>> AddRecipe(AddRecipeDto newRecipe);
 
@@ -22,10 +22,18 @@ namespace PracticalCook.Application.Services.RecipeService
 
         Task<Response<GetRecipeDto>> DeleteRecipe(int id);
 
-        Task<Response<GetRecipeDto>> AddIngredientToRecipe(AddRecipeIngredientDto recipeIngredient);
+        Task<Response<GetRecipeDto>> AddIngredientToRecipe(int recipeId, AddRecipeIngredientDto recipeIngredient);
 
-        Task<Response<GetRecipeDto>> AddUtensilToRecipe(AddRecipeUtensilDto recipeUtensil);
+        Task<Response<GetRecipeDto>> RemoveIngredientFromRecipe(int recipeId, int ingredientId);
 
-        Task<Response<GetRecipeDto>> AddStepToRecipe(AddRecipeStepDto recipeStep);
+        Task<Response<GetRecipeDto>> AddUtensilToRecipe(int recipeId, AddRecipeUtensilDto recipeUtensil);
+
+        Task<Response<GetRecipeDto>> RemoveUtensilFromRecipe(int recipeId, int utensilId);
+
+        Task<Response<GetRecipeDto>> AddStepToRecipe(int recipeId, AddRecipeStepDto recipeStep);
+
+        Task<Response<GetRecipeDto>> RemoveStepFromRecipe(int recipeId, int stepId);
+
+        Task<Response<GetRecipeDto>> UpdateStepInRecipe(int recipeId, UpdateRecipeStepDto updatedStep);
     }
 }

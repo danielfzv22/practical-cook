@@ -7,8 +7,6 @@ namespace PracticalCook.Application.Dtos.Recipe
 {
     public class AddRecipeUtensilDto
     {
-        public int RecipeId { get; set; }
-
         public int UtensilId { get; set; }
     }
 }

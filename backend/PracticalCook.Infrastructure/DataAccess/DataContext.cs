@@ -56,7 +56,7 @@ namespace PracticalCook.Infrastructure.DataAccess
             modelBuilder.Entity<Recipe>()
                 .HasMany(r => r.Steps)
                 .WithOne()
-                .HasForeignKey(rs => rs.StepId)
+                .HasForeignKey(rs => rs.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Recipe>()
@@ -100,7 +100,6 @@ namespace PracticalCook.Infrastructure.DataAccess
                 .WithMany()
                 .HasForeignKey(ri => ri.IngredientId)
                 .OnDelete(DeleteBehavior.Cascade);
-
 
             modelBuilder.Entity<Step>()
                 .HasKey(rs => rs.Id);

@@ -75,14 +75,14 @@ namespace PracticalCook.Application.Services.RecipeService
             return response;
         }
 
-        public async Task<Response<GetRecipeInformationDto>> GetRecipeById(int id)
+        public async Task<Response<GetRecipeDto>> GetRecipeById(int id)
         {
-            var response = new Response<GetRecipeInformationDto>();
+            var response = new Response<GetRecipeDto>();
             try
             {
                 var recipe = await _recipeRepository.GetRecipeWithDetails(id) ?? throw new Exception($"Recipe with id {id} not found!");
 
-                response.Data = _mapper.Map<GetRecipeInformationDto>(recipe);
+                response.Data = _mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -133,12 +133,13 @@ namespace PracticalCook.Application.Services.RecipeService
             return response;
         }
 
-        public async Task<Response<GetRecipeDto>> AddIngredientToRecipe(AddRecipeIngredientDto newIngredientRecipe)
+        public async Task<Response<GetRecipeDto>> AddIngredientToRecipe(int recipeId, AddRecipeIngredientDto newIngredientRecipe)
         {
             var response = new Response<GetRecipeDto>();
             try
             {
                 var recipeIngredient = _mapper.Map<RecipeIngredient>(newIngredientRecipe);
+                recipeIngredient.RecipeId = recipeId;
 
                 var recipe = await _recipeRepository.AddIngredientToRecipe(recipeIngredient);
 
@@ -153,12 +154,29 @@ namespace PracticalCook.Application.Services.RecipeService
             return response;
         }
 
-        public async Task<Response<GetRecipeDto>> AddUtensilToRecipe(AddRecipeUtensilDto newUtensilRecipe)
+        public async Task<Response<GetRecipeDto>> RemoveIngredientFromRecipe(int recipeId, int ingredientId)
+        {
+            var response = new Response<GetRecipeDto>();
+            try
+            {
+                var recipe = await _recipeRepository.RemoveIngredientFromRecipe(recipeId, ingredientId);
+                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<GetRecipeDto>> AddUtensilToRecipe(int recipeId, AddRecipeUtensilDto newUtensilRecipe)
         {
             var response = new Response<GetRecipeDto>();
             try
             {
                 var recipeUtensil = _mapper.Map<RecipeUtensil>(newUtensilRecipe);
+                recipeUtensil.RecipeId = recipeId;
 
                 var recipe = await _recipeRepository.AddUtensilToRecipe(recipeUtensil);
 
@@ -172,12 +190,30 @@ namespace PracticalCook.Application.Services.RecipeService
 
             return response;
         }
-        public async Task<Response<GetRecipeDto>> AddStepToRecipe(AddRecipeStepDto newRecipeStep)
+
+        public async Task<Response<GetRecipeDto>> RemoveUtensilFromRecipe(int recipeId, int utensilId)
+        {
+            var response = new Response<GetRecipeDto>();
+            try
+            {
+                var recipe = await _recipeRepository.RemoveUtensilFromRecipe(recipeId, utensilId);
+                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<GetRecipeDto>> AddStepToRecipe(int recipeId, AddRecipeStepDto newRecipeStep)
         {
             var response = new Response<GetRecipeDto>();
             try
             {
                 var recipeStep = _mapper.Map<Step>(newRecipeStep);
+                recipeStep.RecipeId = recipeId;
 
                 var recipe = await _recipeRepository.AddStepToRecipe(recipeStep);
 
@@ -189,6 +225,48 @@ namespace PracticalCook.Application.Services.RecipeService
                 response.Message = ex.Message;
             }
 
+            return response;
+        }
+
+        public async Task<Response<GetRecipeDto>> RemoveStepFromRecipe(int recipeId, int stepId)
+        {
+            var response = new Response<GetRecipeDto>();
+            try
+            {
+                var recipe = await _recipeRepository.RemoveStepFromRecipe(recipeId, stepId);
+                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<GetRecipeDto>> UpdateStepInRecipe(int recipeId, UpdateRecipeStepDto updatedStep)
+        {
+            var response = new Response<GetRecipeDto>();
+            try
+            {
+                var recipeStep = await _recipeRepository.GetByIdAsync(recipeId) ?? throw new Exception($"Recipe with id {recipeId} not found!");
+
+                var stepUpdated = new Step(recipeStep)
+                {
+                    Id = updatedStep.Id,
+                    Title = updatedStep.Title,
+                    Description = updatedStep.Description,
+                    StepOrder = updatedStep.StepOrder
+                };
+
+                var recipe = await _recipeRepository.UpdateStepInRecipe(recipeId, stepUpdated);
+                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
             return response;
         }
     }

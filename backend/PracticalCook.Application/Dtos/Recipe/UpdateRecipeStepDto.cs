@@ -1,6 +1,12 @@
-﻿namespace PracticalCook.Application.Dtos.Recipe
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PracticalCook.Application.Dtos.Recipe
 {
-    public class GetRecipeStepDto
+    public class UpdateRecipeStepDto
     {
         public int Id { get; set; }
 

@@ -2,9 +2,10 @@
 {
     public class AddRecipeStepDto
     {
-        public int RecipeId { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-        public int StepId { get; set; }
+        public int StepOrder { get; set; }
 
+        public string Description { get; set; } = string.Empty;
     }
 }

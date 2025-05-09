@@ -13,6 +13,29 @@ namespace PracticalCook.Infrastructure.Repositories
 {
     public class RecipeRepository(DataContext context) : GenericRepository<Recipe>(context), IRecipeRepository
     {
+        public async Task<Recipe> GetRecipeWithDetails(int id)
+        {
+            var recipe = await _dbSet
+                .Include(r => r.RecipeIngredients)
+                    .ThenInclude(ri => ri.Ingredient)
+                .Include(r => r.RecipeUtensils)
+                    .ThenInclude(ru => ru.Utensil)
+                .Include(r => r.Steps)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            return recipe;
+        }
+
+        public async Task<List<Recipe>> AddMultipleRecipes(List<Recipe> recipes)
+        {
+            _dbSet.AddRange(recipes);
+            await context.SaveChangesAsync();
+            return recipes;
+        }
+
         public async Task<Recipe> AddIngredientToRecipe(RecipeIngredient recipeIngredient)
         {
             var recipe = await _dbSet
@@ -35,25 +58,25 @@ namespace PracticalCook.Infrastructure.Repositories
             return recipe;
         }
 
-        public async Task<List<Recipe>> AddMultipleRecipes(List<Recipe> recipes)
-        {
-            _dbSet.AddRange(recipes);
-            await context.SaveChangesAsync();
-            return recipes;
-        }
-
-        public async Task<Recipe> AddStepToRecipe(Step recipeStep)
+        public async Task<Recipe> RemoveIngredientFromRecipe(int recipeId, int ingredientId)
         {
             var recipe = await _dbSet
-                .Include(r => r.Steps)
-                .FirstOrDefaultAsync(r => r.Id == recipeStep.RecipeId);
+                .Include(r => r.RecipeIngredients)
+                .FirstOrDefaultAsync(r => r.Id == recipeId);
 
             if (recipe == null)
                 throw new Exception("Recipe not found");
 
-            recipe.Steps.Add(recipeStep);
+            var recipeIngredient = recipe.RecipeIngredients
+                .FirstOrDefault(ri => ri.IngredientId == ingredientId);
+
+            if (recipeIngredient == null)
+                throw new Exception("Ingredient not found in recipe");
+
+            recipe.RecipeIngredients.Remove(recipeIngredient);
+
             await context.SaveChangesAsync();
-            return recipeStep.Recipe;
+            return recipe;
         }
 
         public async Task<Recipe> AddUtensilToRecipe(RecipeUtensil recipeUtensil)
@@ -77,19 +100,81 @@ namespace PracticalCook.Infrastructure.Repositories
             return recipeUtensil.Recipe;
         }
 
-        public async Task<Recipe> GetRecipeWithDetails(int id)
+        public async Task<Recipe> RemoveUtensilFromRecipe(int recipeId, int utensilId)
         {
             var recipe = await _dbSet
-                .Include(r => r.RecipeIngredients)
-                    .ThenInclude(ri => ri.Ingredient)
                 .Include(r => r.RecipeUtensils)
-                    .ThenInclude(ru => ru.Utensil)
-                .Include(r => r.Steps)
-                .FirstOrDefaultAsync(r => r.Id == id);
+                .FirstOrDefaultAsync(r => r.Id == recipeId);
 
             if (recipe == null)
                 throw new Exception("Recipe not found");
 
+            var recipeUtensil = recipe.RecipeUtensils
+                .FirstOrDefault(ru => ru.UtensilId == utensilId);
+
+            if (recipeUtensil == null)
+                throw new Exception("Utensil not found in recipe");
+
+            recipe.RecipeUtensils.Remove(recipeUtensil);
+            await context.SaveChangesAsync();
+
+            return recipe;
+        }
+
+        public async Task<Recipe> AddStepToRecipe(Step recipeStep)
+        {
+            var recipe = await _dbSet
+                .Include(r => r.Steps)
+                .FirstOrDefaultAsync(r => r.Id == recipeStep.RecipeId);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            recipe.Steps.Add(recipeStep);
+            await context.SaveChangesAsync();
+            return recipeStep.Recipe;
+        }
+
+        public async Task<Recipe> RemoveStepFromRecipe(int recipeId, int stepId)
+        {
+            var recipe = await _dbSet
+                .Include(r => r.Steps)
+                .FirstOrDefaultAsync(r => r.Id == recipeId);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            var recipeStep = recipe.Steps
+                .FirstOrDefault(rs => rs.Id == stepId);
+
+            if (recipeStep == null)
+                throw new Exception("Step not found in recipe");
+
+            recipe.Steps.Remove(recipeStep);
+            await context.SaveChangesAsync();
+
+            return recipe;
+        }
+
+        public async Task<Recipe> UpdateStepInRecipe(int recipeId, Step updatedStep)
+        {
+            var recipe = await _dbSet
+                .Include(r => r.Steps)
+                .FirstOrDefaultAsync(r => r.Id == recipeId);
+
+            if (recipe == null)
+                throw new Exception("Recipe not found");
+
+            var recipeStep = recipe.Steps
+                .FirstOrDefault(rs => rs.Id == updatedStep.Id);
+            if (recipeStep == null)
+                throw new Exception("Step not found in recipe");
+
+            recipeStep.Title = updatedStep.Title;
+            recipeStep.Description = updatedStep.Description;
+            recipeStep.StepOrder = updatedStep.StepOrder;
+
+            await context.SaveChangesAsync();
             return recipe;
         }
     }
