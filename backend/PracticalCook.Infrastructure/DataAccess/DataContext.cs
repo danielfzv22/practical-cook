@@ -32,6 +32,9 @@ namespace PracticalCook.Infrastructure.DataAccess
 
         public DbSet<Step> Steps => Set<Step>();
 
+        public DbSet<User> Users => Set<User>();
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (!options.IsConfigured)

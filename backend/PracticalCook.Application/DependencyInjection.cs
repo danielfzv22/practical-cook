@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PracticalCook.Application.Mappings;
+using PracticalCook.Application.Services.Auth;
 using PracticalCook.Application.Services.IngredientService;
 using PracticalCook.Application.Services.RecipeService;
 using PracticalCook.Application.Services.UtensilService;
@@ -19,6 +20,7 @@ namespace PracticalCook.Application
             services.AddScoped<IRecipeService, RecipeService>();
             services.AddScoped<IUtensilService, UtensilService>();
             services.AddScoped<IIngredientService, IngredientService>();
+            services.AddScoped<IAuthService, AuthService>();
             return services;
         }
     }
