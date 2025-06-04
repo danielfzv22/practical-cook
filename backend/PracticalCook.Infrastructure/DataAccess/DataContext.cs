@@ -34,6 +34,12 @@ namespace PracticalCook.Infrastructure.DataAccess
 
         public DbSet<User> Users => Set<User>();
 
+        public DbSet<UserRecipe> UserRecipes => Set<UserRecipe>();
+
+        public DbSet<Tag> Tags => Set<Tag>();
+
+        public DbSet<RecipeTag> RecipeTags => Set<RecipeTag>();
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
@@ -111,6 +117,66 @@ namespace PracticalCook.Infrastructure.DataAccess
                 .HasOne(rs => rs.Recipe)
                 .WithMany(r => r.Steps)
                 .HasForeignKey(rs => rs.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasKey(u => u.Id);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.CreatedRecipes)
+                .WithOne(r => r.CreatedByUser)
+                .HasForeignKey(r => r.CreatedByUserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.UserRecipes)
+                .WithOne(ur => ur.User)
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.UserIngredients)
+                .WithOne(i => i.CreatedByUser)
+                .HasForeignKey(i => i.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.UserUtensils)
+                .WithOne(u => u.CreatedByUser)
+                .HasForeignKey(u => u.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserRecipe>()
+                .HasKey(ur => new { ur.UserId, ur.RecipeId });
+
+            modelBuilder.Entity<UserRecipe>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRecipes)
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserRecipe>()
+                .HasOne(ur => ur.Recipe)
+                .WithMany()
+                .HasForeignKey(ur => ur.RecipeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Tag>()
+                .HasKey(t => t.Id);
+
+            modelBuilder.Entity<RecipeTag>()
+                .HasKey(rt => new { rt.RecipeId, rt.TagId });
+
+            modelBuilder.Entity<RecipeTag>()
+                .HasOne(rt => rt.Recipe)
+                .WithMany(r => r.RecipeTags)
+                .HasForeignKey(rt => rt.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RecipeTag>()
+                .HasOne(rt => rt.Tag)
+                .WithMany()
+                .HasForeignKey(rt => rt.TagId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

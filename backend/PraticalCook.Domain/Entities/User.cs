@@ -19,5 +19,13 @@ namespace PraticalCook.Domain.Entities
         public string? RefreshToken { get; set; }
 
         public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        public ICollection<UserRecipe> UserRecipes { get; set; } = [];
+
+        public ICollection<Recipe> CreatedRecipes { get; set; } = [];
+
+        public ICollection<Ingredient> UserIngredients { get; set; } = [];
+
+        public ICollection<Utensil> UserUtensils { get; set; } = [];
     }
 }

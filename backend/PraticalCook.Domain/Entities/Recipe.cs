@@ -24,10 +24,21 @@ namespace PraticalCook.Domain.Entities
 
         public int PreparationTime { get; set; }
 
+        public bool IsPublic { get; set; } = false;
+
+        public bool HasBeenPublished { get; set; } = false;
+
+        public bool IsAnonymous { get; set; }
+
+        public Guid? CreatedByUserId { get; set; }
+        public User? CreatedByUser { get; set; }
+
         public ICollection<Step> Steps { get; set; } = [];
 
         public ICollection<RecipeIngredient> RecipeIngredients { get; set; } = [];
 
         public ICollection<RecipeUtensil> RecipeUtensils { get; set; } = [];
+
+        public ICollection<RecipeTag> RecipeTags { get; set; } = [];
     }
 }
