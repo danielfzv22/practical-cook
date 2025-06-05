@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PracticalCook.Application.Dtos.Auth
+namespace PracticalCook.Application.Dtos.User
 {
-    public class UserDto
+    public class GetUserDto
     {
+        public Guid Id { get; set; } = Guid.Empty;
+
         public string Username { get; set; } = string.Empty;
 
         public string Password { get; set; } = string.Empty;
+
+        public string Role { get; set; } = string.Empty;
     }
 }

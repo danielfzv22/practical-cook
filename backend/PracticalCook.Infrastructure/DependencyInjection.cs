@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using PracticalCook.Application.Services.Auth;
 using PracticalCook.Application.Services.IngredientService;
 using PracticalCook.Application.Services.RecipeService;
+using PracticalCook.Application.Services.UserService;
 using PracticalCook.Application.Services.UtensilService;
 using PracticalCook.Infrastructure.DataAccess;
 using PracticalCook.Infrastructure.Repositories;

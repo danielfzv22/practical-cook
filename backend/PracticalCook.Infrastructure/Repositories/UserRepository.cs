@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PracticalCook.Application.Services.Auth;
 using PracticalCook.Application.Services.RecipeService;
+using PracticalCook.Application.Services.UserService;
 using PracticalCook.Infrastructure.DataAccess;
 using PraticalCook.Domain.Entities;
 using System;

@@ -9,6 +9,8 @@ using Microsoft.IdentityModel.Tokens;
 using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Auth;
 using PracticalCook.Application.Dtos.Ingredient;
+using PracticalCook.Application.Dtos.User;
+using PracticalCook.Application.Services.UserService;
 using PraticalCook.Domain.Entities;
 
 namespace PracticalCook.Application.Services.Auth
@@ -21,10 +23,12 @@ namespace PracticalCook.Application.Services.Auth
             try
             {
                 var userExist = await userRepository.GetByUsernameAsync(request.Username);
-                if (userExist == null)
+                if (userExist != null)
                 {
                     response.Success = false;
                     response.Message = "User already registered";
+
+                    return response;
                 }
 
                 var user = new User();

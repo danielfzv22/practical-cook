@@ -1,5 +1,6 @@
 ﻿using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Auth;
+using PracticalCook.Application.Dtos.User;
 using PraticalCook.Domain.Entities;
 using System;
 using System.Collections.Generic;

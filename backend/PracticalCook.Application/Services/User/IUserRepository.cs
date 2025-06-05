@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PracticalCook.Application.Services.Auth
+namespace PracticalCook.Application.Services.UserService
 {
     public interface IUserRepository : IGenericRepository<User>
     {

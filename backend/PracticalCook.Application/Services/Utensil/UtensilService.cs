@@ -1,6 +1,7 @@
 using AutoMapper;
 using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Utensil;
+using PracticalCook.Application.Services.UserService;
 using PraticalCook.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,20 @@ using System.Threading.Tasks;
 
 namespace PracticalCook.Application.Services.UtensilService
 {
-    public class UtensilService(IMapper mapper, IUtensilRepository utensilRepository) : IUtensilService
+    public class UtensilService(IMapper mapper, IUtensilRepository utensilRepository, IUserRepository userRepository) : IUtensilService
     {
-        private readonly IMapper _mapper = mapper;
-        private readonly IUtensilRepository _utensilRepository = utensilRepository;
-
-        public async Task<Response<GetUtensilDto>> AddUtensil(AddUtensilDto newUtensil)
+        public async Task<Response<GetUtensilDto>> AddUtensil(AddUtensilDto newUtensil, Guid userId)
         {
             var response = new Response<GetUtensilDto>();
             try
             {
-                var utensil = _mapper.Map<Utensil>(newUtensil);
-                await _utensilRepository.AddAsync(utensil);
+                var utensil = mapper.Map<Utensil>(newUtensil);
+                var user = await userRepository.GetByGuidAsync(userId) ?? throw new Exception($"User with id {userId} not found!");
+                utensil.CreatedByUser = user;
 
-                response.Data = _mapper.Map<GetUtensilDto>(utensil);
+                await utensilRepository.AddAsync(utensil);
+
+                response.Data = mapper.Map<GetUtensilDto>(utensil);
             }
             catch (Exception ex)
             {
@@ -38,8 +39,8 @@ namespace PracticalCook.Application.Services.UtensilService
             var response = new Response<GetUtensilDto>();
             try
             {
-                var utensilToRemove = await _utensilRepository.RemoveAsync(id) ?? throw new Exception($"Utensil with id {id} not found!");
-                response.Data = _mapper.Map<GetUtensilDto>(utensilToRemove);
+                var utensilToRemove = await utensilRepository.RemoveAsync(id) ?? throw new Exception($"Utensil with id {id} not found!");
+                response.Data = mapper.Map<GetUtensilDto>(utensilToRemove);
             }
             catch (Exception ex)
             {
@@ -55,9 +56,9 @@ namespace PracticalCook.Application.Services.UtensilService
             var response = new Response<GetUtensilDto>();
             try
             {
-                var utensil = await _utensilRepository.GetByIdAsync(id) ?? throw new Exception($"Utensil with id {id} not found!");
+                var utensil = await utensilRepository.GetByIdAsync(id) ?? throw new Exception($"Utensil with id {id} not found!");
 
-                response.Data = _mapper.Map<GetUtensilDto>(utensil);
+                response.Data = mapper.Map<GetUtensilDto>(utensil);
             }
             catch (Exception ex)
             {
@@ -73,8 +74,8 @@ namespace PracticalCook.Application.Services.UtensilService
             var response = new Response<List<GetUtensilDto>>();
             try
             {
-                var utensils = await _utensilRepository.GetAllAsync();
-                response.Data = utensils.Select(i => _mapper.Map<GetUtensilDto>(i)).ToList();
+                var utensils = await utensilRepository.GetAllAsync();
+                response.Data = utensils.Select(i => mapper.Map<GetUtensilDto>(i)).ToList();
             }
             catch (Exception ex)
             {
@@ -90,13 +91,13 @@ namespace PracticalCook.Application.Services.UtensilService
             var response = new Response<GetUtensilDto>();
             try
             {
-                var utensilToUpdate = await _utensilRepository.GetByIdAsync(updatedUtensil.Id) ?? throw new Exception($"Utensil with id {updatedUtensil.Id} not found!");
+                var utensilToUpdate = await utensilRepository.GetByIdAsync(updatedUtensil.Id) ?? throw new Exception($"Utensil with id {updatedUtensil.Id} not found!");
 
                 utensilToUpdate.Name = updatedUtensil.Name;
 
-                await _utensilRepository.UpdateAsync(utensilToUpdate);
+                await utensilRepository.UpdateAsync(utensilToUpdate);
 
-                response.Data = _mapper.Map<GetUtensilDto>(utensilToUpdate);
+                response.Data = mapper.Map<GetUtensilDto>(utensilToUpdate);
             }
             catch (Exception ex)
             {

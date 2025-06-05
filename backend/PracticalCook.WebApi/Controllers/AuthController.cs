@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Auth;
+using PracticalCook.Application.Dtos.User;
 using PracticalCook.Application.Services.Auth;
 
 namespace PracticalCook.WebApi.Controllers

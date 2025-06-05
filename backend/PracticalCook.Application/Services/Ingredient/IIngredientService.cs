@@ -13,7 +13,7 @@ namespace PracticalCook.Application.Services.IngredientService
 
         Task<Response<GetIngredientDto>> GetIngredientById(int id);
 
-        Task<Response<GetIngredientDto>> AddIngredient(AddIngredientDto newIngredient);
+        Task<Response<GetIngredientDto>> AddIngredient(AddIngredientDto newIngredient, Guid userId);
 
         Task<Response<GetIngredientDto>> UpdateIngredient(UpdateIngredientDto updatedIngredient);
 

@@ -28,7 +28,7 @@ namespace PraticalCook.Domain.Entities
 
         public bool HasBeenPublished { get; set; } = false;
 
-        public bool IsAnonymous { get; set; }
+        public bool IsAnonymous { get; set; } = false;
 
         public Guid? CreatedByUserId { get; set; }
         public User? CreatedByUser { get; set; }

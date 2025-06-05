@@ -6,25 +6,35 @@ using AutoMapper;
 using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Ingredient;
 using PracticalCook.Application.Dtos.Recipe;
+using PracticalCook.Application.Services.UserService;
 using PraticalCook.Domain.Entities;
 
 namespace PracticalCook.Application.Services.RecipeService
 {
-    public class RecipeService(IMapper mapper, IRecipeRepository recipeRepository) : IRecipeService
+    public class RecipeService(IMapper mapper, IRecipeRepository recipeRepository, IUserRepository userRepository) : IRecipeService
     {
-        private readonly IMapper _mapper = mapper;
-
-        private readonly IRecipeRepository _recipeRepository = recipeRepository;
-
-        public async Task<Response<GetRecipeDto>> AddRecipe(AddRecipeDto newRecipe)
+        public async Task<Response<GetRecipeDto>> AddRecipe(AddRecipeDto newRecipe, Guid userId)
         {
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipe = _mapper.Map<Recipe>(newRecipe);
-                await _recipeRepository.AddAsync(recipe);
+                var user = await userRepository.GetByGuidAsync(userId) ?? throw new Exception($"User with id {userId} not found!");
+                var recipe = mapper.Map<Recipe>(newRecipe);
+                recipe.CreatedByUser = user;
 
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                await recipeRepository.AddAsync(recipe);
+
+                user.CreatedRecipes.Add(recipe);
+                var userRecipe = new UserRecipe
+                {
+                    UserId = user.Id,
+                    RecipeId = recipe.Id
+                };
+
+                user.UserRecipes.Add(userRecipe);
+                await userRepository.UpdateAsync(user);
+
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -44,10 +54,10 @@ namespace PracticalCook.Application.Services.RecipeService
                 List<Recipe> recipesToAdd = [];
                 foreach (var recipe in newRecipes)
                 {
-                    recipesToAdd.Add(_mapper.Map<Recipe>(recipe));
+                    recipesToAdd.Add(mapper.Map<Recipe>(recipe));
                 }
 
-                await _recipeRepository.AddMultipleRecipes(recipesToAdd);
+                await recipeRepository.AddMultipleRecipes(recipesToAdd);
             }
             catch (Exception ex)
             {
@@ -62,9 +72,9 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipeToRemove = await _recipeRepository.RemoveAsync(id) ?? throw new Exception($"Recipe with id {id} not found!");
+                var recipeToRemove = await recipeRepository.RemoveAsync(id) ?? throw new Exception($"Recipe with id {id} not found!");
 
-                response.Data = _mapper.Map<GetRecipeDto>(recipeToRemove);
+                response.Data = mapper.Map<GetRecipeDto>(recipeToRemove);
             }
             catch (Exception ex)
             {
@@ -80,9 +90,9 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipe = await _recipeRepository.GetRecipeWithDetails(id) ?? throw new Exception($"Recipe with id {id} not found!");
+                var recipe = await recipeRepository.GetRecipeWithDetails(id) ?? throw new Exception($"Recipe with id {id} not found!");
 
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -98,8 +108,25 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<List<GetRecipeDto>>();
             try
             {
-                var recipes = await _recipeRepository.GetAllAsync();
-                response.Data = recipes.Select(i => _mapper.Map<GetRecipeDto>(i)).ToList();
+                var recipes = await recipeRepository.GetAllAsync();
+                response.Data = recipes.Select(i => mapper.Map<GetRecipeDto>(i)).ToList();
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<Response<List<GetRecipeDto>>> GetUserRecipes(Guid userId)
+        {
+            var response = new Response<List<GetRecipeDto>>();
+            try
+            {
+                var recipes = await recipeRepository.GetUserRecipesAsync(userId);
+                response.Data = recipes.Select(i => mapper.Map<GetRecipeDto>(i)).ToList();
             }
             catch (Exception ex)
             {
@@ -115,14 +142,14 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipeToUpdate = await _recipeRepository.GetByIdAsync(updatedRecipe.Id) ?? throw new Exception($"Recipe with id {updatedRecipe.Id} not found!");
+                var recipeToUpdate = await recipeRepository.GetByIdAsync(updatedRecipe.Id) ?? throw new Exception($"Recipe with id {updatedRecipe.Id} not found!");
 
                 recipeToUpdate.Name = updatedRecipe.Name;
                 recipeToUpdate.Description = updatedRecipe.Description;
 
-                await _recipeRepository.UpdateAsync(recipeToUpdate);
+                await recipeRepository.UpdateAsync(recipeToUpdate);
 
-                response.Data = _mapper.Map<GetRecipeDto>(recipeToUpdate);
+                response.Data = mapper.Map<GetRecipeDto>(recipeToUpdate);
             }
             catch (Exception ex)
             {
@@ -138,12 +165,12 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipeIngredient = _mapper.Map<RecipeIngredient>(newIngredientRecipe);
+                var recipeIngredient = mapper.Map<RecipeIngredient>(newIngredientRecipe);
                 recipeIngredient.RecipeId = recipeId;
 
-                var recipe = await _recipeRepository.AddIngredientToRecipe(recipeIngredient);
+                var recipe = await recipeRepository.AddIngredientToRecipe(recipeIngredient);
 
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -159,8 +186,8 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipe = await _recipeRepository.RemoveIngredientFromRecipe(recipeId, ingredientId);
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                var recipe = await recipeRepository.RemoveIngredientFromRecipe(recipeId, ingredientId);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -175,12 +202,12 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipeUtensil = _mapper.Map<RecipeUtensil>(newUtensilRecipe);
+                var recipeUtensil = mapper.Map<RecipeUtensil>(newUtensilRecipe);
                 recipeUtensil.RecipeId = recipeId;
 
-                var recipe = await _recipeRepository.AddUtensilToRecipe(recipeUtensil);
+                var recipe = await recipeRepository.AddUtensilToRecipe(recipeUtensil);
 
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -196,8 +223,8 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipe = await _recipeRepository.RemoveUtensilFromRecipe(recipeId, utensilId);
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                var recipe = await recipeRepository.RemoveUtensilFromRecipe(recipeId, utensilId);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -212,12 +239,12 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipeStep = _mapper.Map<Step>(newRecipeStep);
+                var recipeStep = mapper.Map<Step>(newRecipeStep);
                 recipeStep.RecipeId = recipeId;
 
-                var recipe = await _recipeRepository.AddStepToRecipe(recipeStep);
+                var recipe = await recipeRepository.AddStepToRecipe(recipeStep);
 
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -233,8 +260,8 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipe = await _recipeRepository.RemoveStepFromRecipe(recipeId, stepId);
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                var recipe = await recipeRepository.RemoveStepFromRecipe(recipeId, stepId);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
@@ -249,7 +276,7 @@ namespace PracticalCook.Application.Services.RecipeService
             var response = new Response<GetRecipeDto>();
             try
             {
-                var recipeStep = await _recipeRepository.GetByIdAsync(recipeId) ?? throw new Exception($"Recipe with id {recipeId} not found!");
+                var recipeStep = await recipeRepository.GetByIdAsync(recipeId) ?? throw new Exception($"Recipe with id {recipeId} not found!");
 
                 var stepUpdated = new Step(recipeStep)
                 {
@@ -259,8 +286,8 @@ namespace PracticalCook.Application.Services.RecipeService
                     StepOrder = updatedStep.StepOrder
                 };
 
-                var recipe = await _recipeRepository.UpdateStepInRecipe(recipeId, stepUpdated);
-                response.Data = _mapper.Map<GetRecipeDto>(recipe);
+                var recipe = await recipeRepository.UpdateStepInRecipe(recipeId, stepUpdated);
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
             }
             catch (Exception ex)
             {
