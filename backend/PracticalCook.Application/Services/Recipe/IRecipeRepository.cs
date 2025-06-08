@@ -13,6 +13,8 @@ namespace PracticalCook.Application.Services.RecipeService
     {
         Task<Recipe> GetRecipeWithDetails(int id);
 
+        Task<List<Recipe>> GetUserRecipesAsync(Guid userId);
+
         Task<List<Recipe>> AddMultipleRecipes(List<Recipe> recipes);
 
         Task<Recipe> AddIngredientToRecipe(RecipeIngredient recipeIngredient);

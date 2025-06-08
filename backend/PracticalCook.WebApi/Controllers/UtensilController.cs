@@ -1,5 +1,8 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PracticalCook.Application.Common.Responses;
+using PracticalCook.Application.Dtos.Recipe;
 using PracticalCook.Application.Dtos.Utensil;
 using PracticalCook.Application.Services.UtensilService;
 
@@ -63,13 +66,21 @@ namespace PracticalCook.WebApi.Controllers
                 });
             }
         }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Response<GetUtensilDto>>> AddUtensil([FromBody] AddUtensilDto newUtensil)
         {
             logger.LogInformation("POST /utensils - Adding new utensil: {Name}", newUtensil.Name);
             try
             {
-                var response = await utensilService.AddUtensil(newUtensil);
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdString, out Guid userId))
+                {
+                    return Unauthorized(new Response<GetRecipeDto> { Success = false, Message = "Invalid user token." });
+                }
+
+                var response = await utensilService.AddUtensil(newUtensil, userId);
                 if (!response.Success)
                     logger.LogWarning("POST /utensils - Failed to add utensil: {Message}", response.Message);
                 else

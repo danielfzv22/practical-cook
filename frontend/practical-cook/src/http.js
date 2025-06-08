@@ -1,3 +1,5 @@
+import { s } from "motion/react-client";
+
 export async function fetchAvailablePlaces() {
   const response = await fetch("http://localhost:3000/places");
   const resData = await response.json();
@@ -57,14 +59,24 @@ export async function createRecipe(recipe) {
 
 export async function fetchRecipes() {
   const response = await fetch("http://localhost:5086/recipes");
-  const resData = await response.json();
   if (!response.ok) {
     throw new Error("Failed to fetch recipes");
   }
 
+  const resData = await response.json();
   return resData.data;
 }
 
+export async function LoadRecipes() {
+  const response = await fetch("http://localhost:5086/recipes");
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({ isError: true, message: "Failed to fetch recipes" }),
+      { status: 500 }
+    );
+  }
+  return response;
+}
 
 export async function fetchRecipeById(id) {
   const response = await fetch(`http://localhost:5086/recipes/${id}`);

@@ -1,6 +1,7 @@
 using AutoMapper;
 using PracticalCook.Application.Dtos.Ingredient;
 using PracticalCook.Application.Dtos.Recipe;
+using PracticalCook.Application.Dtos.User;
 using PracticalCook.Application.Dtos.Utensil;
 using PraticalCook.Domain.Entities;
 
@@ -30,6 +31,8 @@ namespace PracticalCook.Application.Mappings
 
             CreateMap<AddRecipeStepDto, Step>();
             CreateMap<Step, GetRecipeStepDto>();
+
+            CreateMap<User, GetUserDto>();
         }
     }
 }

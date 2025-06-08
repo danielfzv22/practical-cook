@@ -21,6 +21,7 @@ namespace PracticalCook.Infrastructure.Repositories
                 .Include(r => r.RecipeUtensils)
                     .ThenInclude(ru => ru.Utensil)
                 .Include(r => r.Steps)
+                .Include(r => r.CreatedByUser)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (recipe == null)
@@ -176,6 +177,23 @@ namespace PracticalCook.Infrastructure.Repositories
 
             await context.SaveChangesAsync();
             return recipe;
+        }
+
+        public async Task<List<Recipe>> GetUserRecipesAsync(Guid userId)
+        {
+            var user = await _context.Users
+               .Include(u => u.UserRecipes)
+               .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null) return new List<Recipe>();
+
+            var recipeIds = user.UserRecipes.Select(ur => ur.RecipeId);
+
+            var recipes = await _context.Recipes
+                .Where(r => recipeIds.Contains(r.Id))
+                .ToListAsync();
+
+            return recipes;
         }
     }
 }

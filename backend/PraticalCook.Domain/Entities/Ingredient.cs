@@ -13,5 +13,11 @@ namespace PraticalCook.Domain.Entities
         public string Name { get; set; } = string.Empty;
 
         public FoodType Type { get; set; }
+
+        public bool IsGlobal { get; set; } = false;
+
+        public Guid? CreatedByUserId { get; set; }
+
+        public User? CreatedByUser { get; set; }
     }
 }

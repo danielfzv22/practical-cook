@@ -1,6 +1,9 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Ingredient;
+using PracticalCook.Application.Dtos.Recipe;
 using PracticalCook.Application.Services.IngredientService;
 
 namespace PracticalCook.WebApi.Controllers
@@ -62,17 +65,25 @@ namespace PracticalCook.WebApi.Controllers
                 });
             }
         }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Response<GetIngredientDto>>> AddIngredient([FromBody] AddIngredientDto newIngredient)
         {
             logger.LogInformation("POST /ingredients - Adding new ingredient: {Name}", newIngredient.Name);
             try
             {
-                var response = await ingredientService.AddIngredient(newIngredient);
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdString, out Guid userId))
+                {
+                    return Unauthorized(new Response<GetRecipeDto> { Success = false, Message = "Invalid user token." });
+                }
+
+                var response = await ingredientService.AddIngredient(newIngredient, userId);
                 if (!response.Success)
                     logger.LogWarning("POST /ingredients - Failed to add ingredient: {Message}", response.Message);
                 else
-                    logger.LogInformation("POST /ingredients - Ingredient added with ID {Id}", response.Data.Id);
+                    logger.LogInformation("POST /ingredients - Ingredient added with ID {Id}", response.Data?.Id);
 
                 return Ok(response);
             }

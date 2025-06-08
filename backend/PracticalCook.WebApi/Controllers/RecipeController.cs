@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Recipe;
@@ -10,7 +12,7 @@ namespace PracticalCook.WebApi.Controllers
     public class RecipeController(IRecipeService recipeService, ILogger<RecipeController> logger) : ControllerBase
     {
         [HttpGet]
-        public async Task<ActionResult<Response<GetRecipeDto>>> GetRecipes()
+        public async Task<ActionResult<Response<List<GetRecipeDto>>>> GetRecipes()
         {
             logger.LogInformation("GET /recipes - Fetching all recipes");
             try
@@ -28,7 +30,7 @@ namespace PracticalCook.WebApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "GET /recipes - Error fetching recipes");
-                return StatusCode(500, new Response<GetRecipeDto>
+                return StatusCode(500, new Response<List<GetRecipeDto>>
                 {
                     Success = false,
                     Message = "Internal server error."
@@ -63,17 +65,59 @@ namespace PracticalCook.WebApi.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet("user-recipes")]
+        public async Task<ActionResult<Response<GetRecipeDto>>> GetUserRecipes()
+        {
+            logger.LogInformation("GET /recipes - Fetching all recipes");
+            try
+            {
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdString, out Guid userId))
+                {
+                    return Unauthorized(new Response<GetRecipeDto> { Success = false, Message = "Invalid user token." });
+                }
+
+                var response = await recipeService.GetUserRecipes(userId);
+                var count = response.Data?.Count ?? 0;
+
+                if (count == 0)
+                    logger.LogWarning("GET /recipes - No recipes found");
+                else
+                    logger.LogInformation("GET /recipes - Retrieved {Count} recipes", count);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "GET /recipes - Error fetching recipes");
+                return StatusCode(500, new Response<GetRecipeDto>
+                {
+                    Success = false,
+                    Message = "Internal server error."
+                });
+            }
+        }
+
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Response<GetRecipeDto>>> AddRecipe([FromBody] AddRecipeDto newRecipe)
         {
             logger.LogInformation("POST /recipes - Adding new recipe: {Name}", newRecipe.Name);
+
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                return Unauthorized(new Response<GetRecipeDto> { Success = false, Message = "Invalid user token." });
+            }
+
             try
             {
-                var response = await recipeService.AddRecipe(newRecipe);
+                var response = await recipeService.AddRecipe(newRecipe, userId);
                 if (!response.Success)
                     logger.LogWarning("POST /recipes - Failed to add recipe: {Message}", response.Message);
                 else
-                    logger.LogInformation("POST /recipes - Recipe added with ID {Id}", response.Data.Id);
+                    logger.LogInformation("POST /recipes - Recipe added with ID {Id}", response.Data?.Id);
 
                 return Ok(response);
             }

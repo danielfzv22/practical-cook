@@ -13,7 +13,7 @@ namespace PracticalCook.Application.Services.UtensilService
 
         Task<Response<GetUtensilDto>> GetUtensilById(int id);
 
-        Task<Response<GetUtensilDto>> AddUtensil(AddUtensilDto newUtensil);
+        Task<Response<GetUtensilDto>> AddUtensil(AddUtensilDto newUtensil, Guid userId);
 
         Task<Response<GetUtensilDto>> UpdateUtensil(UpdateUtensilDto updatedUtensil);
 

@@ -5,25 +5,24 @@ using System.Threading.Tasks;
 using AutoMapper;
 using PracticalCook.Application.Common.Responses;
 using PracticalCook.Application.Dtos.Ingredient;
+using PracticalCook.Application.Services.UserService;
 using PraticalCook.Domain.Entities;
 
 namespace PracticalCook.Application.Services.IngredientService
 {
-    public class IngredientService(IMapper mapper, IIngredientRepository ingredientRepository) : IIngredientService
+    public class IngredientService(IMapper mapper, IIngredientRepository ingredientRepository, IUserRepository userRepository) : IIngredientService
     {
-        private readonly IMapper _mapper = mapper;
-
-        private readonly IIngredientRepository _ingredientRepository = ingredientRepository;
-
-        public async Task<Response<GetIngredientDto>> AddIngredient(AddIngredientDto newIngredient)
+        public async Task<Response<GetIngredientDto>> AddIngredient(AddIngredientDto newIngredient, Guid userId)
         {
             var response = new Response<GetIngredientDto>();
             try
             {
-                var ingredient = _mapper.Map<Ingredient>(newIngredient);
-                var createdIngredient = await _ingredientRepository.AddAsync(ingredient);
+                var user = await userRepository.GetByGuidAsync(userId) ?? throw new Exception($"User with id {userId} not found!");
+                var ingredient = mapper.Map<Ingredient>(newIngredient);
+                ingredient.CreatedByUser = user;
+                var createdIngredient = await ingredientRepository.AddAsync(ingredient);
 
-                response.Data = _mapper.Map<GetIngredientDto>(createdIngredient);
+                response.Data = mapper.Map<GetIngredientDto>(createdIngredient);
             }
             catch (Exception ex)
             {
@@ -39,9 +38,9 @@ namespace PracticalCook.Application.Services.IngredientService
             var response = new Response<GetIngredientDto>();
             try
             {
-                var ingredientToRemove = await _ingredientRepository.RemoveAsync(id) ?? throw new Exception($"Ingredient with id {id} not found!");
+                var ingredientToRemove = await ingredientRepository.RemoveAsync(id) ?? throw new Exception($"Ingredient with id {id} not found!");
 
-                response.Data = _mapper.Map<GetIngredientDto>(ingredientToRemove);
+                response.Data = mapper.Map<GetIngredientDto>(ingredientToRemove);
             }
             catch (Exception ex)
             {
@@ -57,9 +56,9 @@ namespace PracticalCook.Application.Services.IngredientService
             var response = new Response<GetIngredientDto>();
             try
             {
-                var ingredient = await _ingredientRepository.GetByIdAsync(id) ?? throw new Exception($"Ingredient with id {id} not found!");
+                var ingredient = await ingredientRepository.GetByIdAsync(id) ?? throw new Exception($"Ingredient with id {id} not found!");
 
-                response.Data = _mapper.Map<GetIngredientDto>(ingredient);
+                response.Data = mapper.Map<GetIngredientDto>(ingredient);
             }
             catch (Exception ex)
             {
@@ -75,8 +74,8 @@ namespace PracticalCook.Application.Services.IngredientService
             var response = new Response<List<GetIngredientDto>>();
             try
             {
-                var ingredients = await _ingredientRepository.GetAllAsync();
-                response.Data = ingredients.Select(i => _mapper.Map<GetIngredientDto>(i)).ToList();
+                var ingredients = await ingredientRepository.GetAllAsync();
+                response.Data = ingredients.Select(i => mapper.Map<GetIngredientDto>(i)).ToList();
             }
             catch (Exception ex)
             {
@@ -92,13 +91,13 @@ namespace PracticalCook.Application.Services.IngredientService
             var response = new Response<GetIngredientDto>();
             try
             {
-                var ingredientToUpdate = await _ingredientRepository.GetByIdAsync(updatedIngredient.Id) ?? throw new Exception($"Ingredient with id {updatedIngredient.Id} not found!");
+                var ingredientToUpdate = await ingredientRepository.GetByIdAsync(updatedIngredient.Id) ?? throw new Exception($"Ingredient with id {updatedIngredient.Id} not found!");
 
                 ingredientToUpdate.Name = updatedIngredient.Name;
                 ingredientToUpdate.Type = updatedIngredient.Type;
-                var updated = await _ingredientRepository.UpdateAsync(ingredientToUpdate);
+                var updated = await ingredientRepository.UpdateAsync(ingredientToUpdate);
 
-                response.Data = _mapper.Map<GetIngredientDto>(updated);
+                response.Data = mapper.Map<GetIngredientDto>(updated);
             }
             catch (Exception ex)
             {
