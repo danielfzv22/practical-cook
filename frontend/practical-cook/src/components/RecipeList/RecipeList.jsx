@@ -1,12 +1,5 @@
 import RecipeItem from "./RecipeItem";
-import {
-  Box,
-  SimpleGrid,
-  Stack,
-  ButtonGroup,
-  IconButton,
-  Pagination,
-} from "@chakra-ui/react";
+import { Stack, ButtonGroup, IconButton, Pagination } from "@chakra-ui/react";
 import { useState } from "react";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { motion } from "motion/react";

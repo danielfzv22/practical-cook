@@ -17,12 +17,12 @@ namespace PracticalCook.Application.Services.Auth
 {
     public class AuthService(IMapper mapper, IConfiguration configuration, IUserRepository userRepository) : IAuthService
     {
-        public async Task<Response<GetUserDto>> RegisterAsync(UserDto request)
+        public async Task<Response<TokenResponseDto>> RegisterAsync(UserDto request)
         {
-            var response = new Response<GetUserDto>();
+            var response = new Response<TokenResponseDto>();
             try
             {
-                var userExist = await userRepository.GetByUsernameAsync(request.Username);
+                var userExist = await userRepository.GetByEmailAsync(request.Email);
                 if (userExist != null)
                 {
                     response.Success = false;
@@ -35,13 +35,24 @@ namespace PracticalCook.Application.Services.Auth
                 var hashedPassword = new PasswordHasher<User>()
                     .HashPassword(user, request.Password);
 
-                user.Username = request.Username;
+                user.Email = request.Email;
                 user.PasswordHash = hashedPassword;
                 user.Role = "User"; // Default role, can be changed later
 
                 await userRepository.AddAsync(user);
 
-                response.Data = mapper.Map<GetUserDto>(user);
+                var newUser = await userRepository.GetByEmailAsync(request.Email);
+
+                if (newUser == null)
+                {
+                    response.Success = false;
+                    response.Message = "User registration failed";
+                    return response;
+                }
+
+                TokenResponseDto tokenResponse = await CreateTokenResponse(newUser);
+                response.Data = tokenResponse;
+
             }
             catch (Exception ex)
             {
@@ -57,7 +68,7 @@ namespace PracticalCook.Application.Services.Auth
             var response = new Response<TokenResponseDto>();
             try
             {
-                var user = await userRepository.GetByUsernameAsync(request.Username);
+                var user = await userRepository.GetByEmailAsync(request.Email);
                 if (user is null)
                 {
                     response.Success = false;
@@ -116,7 +127,7 @@ namespace PracticalCook.Application.Services.Auth
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, user.Username),
+                new(ClaimTypes.Name, user.Email),
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Role, user.Role)
             };

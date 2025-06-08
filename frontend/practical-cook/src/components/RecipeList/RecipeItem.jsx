@@ -2,7 +2,7 @@ import { useContext } from "react";
 import RecipeContext from "../../context/RecipeContext";
 import "./RecipeList.css";
 import { fetchRecipeById } from "../../http";
-import { Button, Card, Image, Text } from "@chakra-ui/react";
+import { Button, Card, Image } from "@chakra-ui/react";
 
 export default function RecipeItem({ recipe }) {
   const ctxRecipe = useContext(RecipeContext);
@@ -27,7 +27,7 @@ export default function RecipeItem({ recipe }) {
     <Card.Root
       maxW="sm"
       overflow="hidden"
-      bg="gray.50" // Fondo de la card
+      bg="#f0f7da" // Fondo de la card
       borderRadius="xl"
       boxShadow="md"
       _hover={{ boxShadow: "lg", bg: "gray.100" }} // Hover effect

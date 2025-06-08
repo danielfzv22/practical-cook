@@ -9,7 +9,7 @@ namespace PracticalCook.Application.Services.UserService
 {
     public interface IUserRepository : IGenericRepository<User>
     {
-        Task<User?> GetByUsernameAsync(string username);
+        Task<User?> GetByEmailAsync(string username);
 
         Task<User?> GetByGuidAsync(Guid userId);
     }

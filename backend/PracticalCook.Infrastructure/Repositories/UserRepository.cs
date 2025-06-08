@@ -18,9 +18,9 @@ namespace PracticalCook.Infrastructure.Repositories
             return await _dbSet.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
-        public async Task<User?> GetByUsernameAsync(string username)
+        public async Task<User?> GetByEmailAsync(string username)
         {
-            return await _dbSet.FirstOrDefaultAsync(u => u.Username == username);
+            return await _dbSet.FirstOrDefaultAsync(u => u.Email == username);
         }
     }
 }

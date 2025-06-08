@@ -12,7 +12,7 @@ namespace PracticalCook.Application.Services.Auth
 {
     public interface IAuthService
     {
-        Task<Response<GetUserDto>> RegisterAsync(UserDto request);
+        Task<Response<TokenResponseDto>> RegisterAsync(UserDto request);
 
         Task<Response<TokenResponseDto>> LoginAsync(UserDto request);
 

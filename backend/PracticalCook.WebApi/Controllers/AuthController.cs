@@ -11,17 +11,20 @@ namespace PracticalCook.WebApi.Controllers
     [Route("[controller]")]
     public class AuthController(IAuthService authService) : ControllerBase
     {
-        [HttpPost("register")]
+        [HttpPost("signup")]
         public async Task<ActionResult<Response<GetUserDto>>> Register([FromBody] UserDto request)
         {
             var response = await authService.RegisterAsync(request);
 
             if (!response.Success)
             {
-                return BadRequest(response.Message);
+                if (response.Message == "User already registered")
+                    return Conflict(response); // 409 Conflict
+
+                return BadRequest(response); // 400 Bad Request
             }
 
-            return Ok(response);
+            return Ok(response); 
         }
 
         [HttpPost("login")]
@@ -31,10 +34,13 @@ namespace PracticalCook.WebApi.Controllers
             var response = await authService.LoginAsync(request);
             if (!response.Success)
             {
-                return BadRequest(response.Message);
+                if (response.Message == "User not found" || response.Message == "Invalid credentials")
+                    return Unauthorized(response); // 401 Unauthorized
+
+                return BadRequest(response); // 400 Bad Request (fallback)
             }
 
-            return Ok(response);
+            return Ok(response); // 200 OK
         }
 
         [HttpPost("refresh-token")]
