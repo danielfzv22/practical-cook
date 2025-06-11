@@ -5,13 +5,20 @@ namespace PraticalCook.Domain.Entities.Enumerations
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum FoodType
     {
-        Vegetable,
-        Fruit,
-        Protein,
-        Carbohydrate,
-        Dairy,
-        Fat,
-        Drinks,
-        Other,
+        vegetable,
+        fruit,
+        grain,
+        protein,
+        dairy,
+        oil,
+        spice,
+        condiment,
+        sweetener,
+        baking,
+        beverage,
+        canned,
+        nut,
+        snack,
+        misc
     }
 }

@@ -2,19 +2,14 @@ import { useContext } from "react";
 import RecipeContext from "../../context/RecipeContext";
 import "./RecipeList.css";
 import { fetchRecipeById } from "../../http";
-import { Button, Card, Image } from "@chakra-ui/react";
+import { Box, Button, Card, Image, Text } from "@chakra-ui/react";
 
 export default function RecipeItem({ recipe }) {
   const ctxRecipe = useContext(RecipeContext);
 
   async function handleSelectRecipe(id) {
     const recipe = await fetchRecipeById(id);
-    console.log(recipe);
-    console.log({
-      ...recipe,
-      prepTime: recipe.preparationTime,
-      instructions: recipe.steps,
-    });
+
     ctxRecipe.editRecipe({
       ...recipe,
       prepTime: recipe.preparationTime,
@@ -25,27 +20,37 @@ export default function RecipeItem({ recipe }) {
 
   return (
     <Card.Root
-      maxW="sm"
+      maxW="lg"
+      minW={"lg"}
+      minH={"250px"}
       overflow="hidden"
-      bg="#f0f7da" // Fondo de la card
+      flexDirection={"row"}
+      bg="neutral.100" // Fondo de la card
       borderRadius="xl"
       boxShadow="md"
-      _hover={{ boxShadow: "lg", bg: "gray.100" }} // Hover effect
+      _hover={{ boxShadow: "lg", bg: "brand.50" }} // Hover effect
     >
       <Image
+        objectFit={"cover"}
         src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
         alt={recipe.name}
+        maxW={"200px"}
       />
-      <Card.Body gap="2">
-        <Card.Title color={"black"}>{recipe.name}</Card.Title>
-        <Card.Description>{recipe.description}</Card.Description>
-      </Card.Body>
-      <Card.Footer gap="2">
-        <Button variant="solid" onClick={() => handleSelectRecipe(recipe.id)}>
-          View
-        </Button>
-        <Button variant="ghost">Add to my meals</Button>
-      </Card.Footer>
+
+      <Box minW={"200px"} flex="1" display="flex" flexDirection="column">
+        <Card.Body gap="2">
+          <Card.Title mb="2" color={"neutral.900"}>
+            {recipe.name}
+          </Card.Title>
+          <Card.Description>
+            <Text lineClamp="3">{recipe.description}</Text>
+          </Card.Description>
+        </Card.Body>
+        <Card.Footer gap="2">
+          <Button variant="solid">View</Button>
+          <Button variant="ghost">Add to my meals</Button>
+        </Card.Footer>
+      </Box>
     </Card.Root>
   );
 }

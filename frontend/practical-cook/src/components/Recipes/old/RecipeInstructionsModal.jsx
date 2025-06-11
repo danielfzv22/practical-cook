@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import Modal from "../../UI/Modal";
 import RecipeContext from "../../../context/RecipeContext";
+import { Box } from "@chakra-ui/react";
 
 export default function RecipeInstructionsModal() {
   const ctxRecipe = useContext(RecipeContext);
@@ -23,7 +24,7 @@ export default function RecipeInstructionsModal() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     setCurrentStep(infoNewRecipeInstr[infoNewRecipeInstr.length - 1]);
     ctxRecipe.editRecipeInstructions(infoNewRecipeInstr);
   };
@@ -83,10 +84,7 @@ export default function RecipeInstructionsModal() {
   const enablePrevious = !isEmpty && currentStep.order > 1;
 
   return (
-    <Modal
-      open={ctxRecipe.selectedForm === "instructions"}
-      onClose={handleOnClose}
-    >
+    <Box>
       <form onSubmit={handleSubmit}>
         <h3>Instructions...</h3>
         <div className="instructions-content">
@@ -153,6 +151,6 @@ export default function RecipeInstructionsModal() {
           </button>
         </div>
       </form>
-    </Modal>
+    </Box>
   );
 }

@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import SectionButton from "../../UI/SectionButton";
 import RecipeContext from "../../../context/RecipeContext";
-import RecipeNotesModal from "../RecipeForm/RecipeNotesModal";
+import RecipeNotesModal from "../RecipeMakerSections/RecipeNotesModal";
 
 export default function RecipeNotesSection() {
   const listLimit = 5;

@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import SectionButton from "../../UI/SectionButton";
 import RecipeContext from "../../../context/RecipeContext";
-import RecipeUtensilsModal from "../RecipeForm/RecipeUtensilsModal";
+import RecipeUtensilsModal from "../RecipeMakerSections/RecipeUtensilsSection";
 
-export default function RecipeUtensilsSection() {
+export default function RecipeUtensilsSectionOld() {
   const ctxRecipe = useContext(RecipeContext);
   const newRecipe = ctxRecipe.recipe;
   const limitLists = 10;
@@ -21,7 +21,9 @@ export default function RecipeUtensilsSection() {
   return (
     <>
       <SectionButton
-        className={`utensils ${ctxRecipe.recipe.name === "" ? "invalid" : "valid"}`}
+        className={`utensils ${
+          ctxRecipe.recipe.name === "" ? "invalid" : "valid"
+        }`}
         isSelected={ctxRecipe.selectedForm === "utensils"}
         onSelect={() => ctxRecipe.showModal("utensils")}
         isDisabled={ctxRecipe.recipe.name === ""}
@@ -33,7 +35,11 @@ export default function RecipeUtensilsSection() {
               if (index < limitLists) {
                 return <li key={utensil.id}>{utensil.name}</li>;
               } else if (index === limitLists) {
-                return <li key={utensil.id}>{newRecipe.utensils.length - index} more...</li>;
+                return (
+                  <li key={utensil.id}>
+                    {newRecipe.utensils.length - index} more...
+                  </li>
+                );
               }
               return;
             })}

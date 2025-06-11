@@ -15,11 +15,11 @@ export function RecipeList({ recipes, fallbackText, isLoading, loadingText }) {
     <>
       <motion.div
         key={page}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, ease: "easeInOut" }}
       >
-        <Stack spacing={6} gap={10} margin={10} direction={"horizontal"}>
+        <Stack p={6} gap={10} m={5} direction={"horizontal"}>
           {paginatedRecipes.map((recipe) => (
             <RecipeItem key={recipe.id} recipe={recipe} onSelect={() => {}} />
           ))}
@@ -27,7 +27,7 @@ export function RecipeList({ recipes, fallbackText, isLoading, loadingText }) {
       </motion.div>
       <Pagination.Root
         bg={"whiteAlpha.900"}
-        padding={3}
+        p={3}
         count={recipes.length}
         pageSize={pageSize}
         page={page}
