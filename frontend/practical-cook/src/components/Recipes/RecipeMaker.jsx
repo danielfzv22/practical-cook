@@ -3,7 +3,7 @@ import RecipeGeneralSection from "./RecipeMakerSections/RecipeGeneralInfoSection
 import RecipeIngredientsSection from "./RecipeMakerSections/RecipeIngredientsSection";
 import RecipeInstructionsSection from "./RecipeMakerSections/RecipeInstructionsSection";
 import RecipeUtensilsSection from "./RecipeMakerSections/RecipeUtensilsSection";
-import RecipeNotesSection from "./RecipeSections/RecipeNotesSection";
+import RecipeNotesSection from "./RecipeMakerSections/RecipeNotesSection";
 import { useContext } from "react";
 import RecipeContext from "../../context/RecipeContext";
 import {
@@ -17,7 +17,7 @@ import {
   Tabs,
   VStack,
 } from "@chakra-ui/react";
-import RecipeNotesModal from "./RecipeMakerSections/RecipeNotesModal";
+import RecipeNotesModal from "./old/RecipeNotesModal";
 import { HiClipboardList } from "react-icons/hi";
 import { GiWhisk } from "react-icons/gi";
 import { TbSalt } from "react-icons/tb";
@@ -121,6 +121,8 @@ export default function RecipeWizard() {
               <RecipeUtensilsSection />
             </Tabs.Content>
           </Tabs.Root>
+          <Separator mt={"5"} variant="dashed" borderColor={"secondary.500"} />
+          <RecipeNotesSection />
         </Box>
       </VStack>
     </Flex>

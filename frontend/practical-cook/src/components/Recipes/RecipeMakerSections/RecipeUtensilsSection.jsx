@@ -62,7 +62,9 @@ function AddUtensilPopover({ utensilValue, onAdd }) {
             </Popover.Header>
             <Popover.Body>
               <Input
-                color={"neutral.900"}
+                fontWeight={"bold"}
+                fontSize={"xl"}
+                color={"secondary.500"}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Utensil name"
@@ -73,6 +75,7 @@ function AddUtensilPopover({ utensilValue, onAdd }) {
                 bg={"secondary.700"}
                 color={"neutral.100"}
                 onClick={handleSubmit}
+                fontSize={"md"}
               >
                 Add
               </Button>
