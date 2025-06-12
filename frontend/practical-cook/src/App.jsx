@@ -6,6 +6,7 @@ import ErrorPage from "./pages/Error.jsx";
 import { Provider } from "./components/UI/provider.jsx";
 import { LoadRecipes as recipeLoader } from "./http.js";
 import LoginPage, { action as loginAction } from "./pages/Login.jsx";
+import RecipeWizard from "./components/Recipes/RecipeMaker.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
         element: <HomePage />,
         loader: recipeLoader,
       },
+      { path: "/recipes/new-recipe", element: <RecipeWizard /> },
       { path: "/auth", element: <LoginPage />, action: loginAction },
     ],
   },

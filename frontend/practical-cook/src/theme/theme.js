@@ -3,6 +3,10 @@ import { colors } from "./tokens/colors";
 import { fonts } from "./tokens/fonts";
 
 const customConfig = defineConfig({
+  config: {
+    initialColorMode: "light",
+    useSystemColorMode: false,
+  },
   theme: {
     tokens: {
       colors,

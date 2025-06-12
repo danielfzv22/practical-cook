@@ -3,6 +3,7 @@ import Input from "../../UI/Input";
 import Modal from "../../UI/Modal";
 import RecipeContext from "../../../context/RecipeContext";
 import { updateRecipeGeneral } from "../../../http";
+import { Box } from "@chakra-ui/react";
 
 export default function RecipeGeneralModal() {
   const ctxRecipe = useContext(RecipeContext);
@@ -49,7 +50,7 @@ export default function RecipeGeneralModal() {
   };
 
   return (
-    <Modal open={ctxRecipe.selectedForm === "general"} onClose={handleOnClose}>
+    <Box>
       <h3>General Information...</h3>
       <form onSubmit={handleSubmit}>
         <Input
@@ -107,6 +108,6 @@ export default function RecipeGeneralModal() {
           </button>
         </div>
       </form>
-    </Modal>
+    </Box>
   );
 }

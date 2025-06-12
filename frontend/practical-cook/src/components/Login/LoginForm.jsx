@@ -77,6 +77,7 @@ function LoginForm() {
               />
             </Field.Root>
             <Button
+              fontFamily={"body"}
               fontSize="lg"
               bg={`${isLogin ? "neutral.900" : "accent.900"}`}
               color="neutral.100"

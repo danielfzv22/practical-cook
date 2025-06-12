@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import Input from "../../UI/Input";
 import Modal from "../../UI/Modal";
 import RecipeContext from "../../../context/RecipeContext";
+import { Box } from "@chakra-ui/react";
 
 export default function RecipeTitleModal({ createNewRecipe }) {
   const ctxRecipe = useContext(RecipeContext);
@@ -29,7 +30,7 @@ export default function RecipeTitleModal({ createNewRecipe }) {
   };
 
   return (
-    <Modal open={ctxRecipe.selectedForm === "title"} onClose={handleOnClose}>
+    <Box>
       <h3>Title...</h3>
       <form onSubmit={handleSubmit}>
         <Input
@@ -55,6 +56,6 @@ export default function RecipeTitleModal({ createNewRecipe }) {
           </button>
         </div>
       </form>
-    </Modal>
+    </Box>
   );
 }

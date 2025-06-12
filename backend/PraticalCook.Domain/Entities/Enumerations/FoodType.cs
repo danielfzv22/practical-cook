@@ -7,11 +7,18 @@ namespace PraticalCook.Domain.Entities.Enumerations
     {
         Vegetable,
         Fruit,
+        Grain,
         Protein,
-        Carbohydrate,
         Dairy,
-        Fat,
-        Drinks,
-        Other,
+        Oil,
+        Spice,
+        Condiment,
+        Sweetener,
+        Baking,
+        Beverage,
+        Canned,
+        Nut,
+        Snack,
+        Other
     }
 }

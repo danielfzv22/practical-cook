@@ -3,6 +3,7 @@ import logo from "../../assets/PC.png";
 import {
   Avatar,
   Box,
+  CloseButton,
   Drawer,
   Flex,
   HStack,
@@ -13,7 +14,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { HiMenu, HiX } from "react-icons/hi";
+import { HiMenu } from "react-icons/hi";
 import { useState } from "react";
 
 const Links = [
@@ -107,7 +108,7 @@ export default function Navbar() {
                   size="md"
                   aria-label="Close Menu"
                 >
-                  <HiX />
+                  <CloseButton />
                 </IconButton>
               </Drawer.CloseTrigger>
             </Drawer.Content>
