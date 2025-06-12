@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import RecipeContext from "../../../context/RecipeContext";
+import RecipeContext from "../../../../../context/RecipeContext";
 import { Box, Field, Textarea } from "@chakra-ui/react";
 
 export default function RecipeNotesSection() {

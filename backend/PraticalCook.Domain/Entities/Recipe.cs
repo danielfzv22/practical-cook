@@ -30,7 +30,10 @@ namespace PraticalCook.Domain.Entities
 
         public bool IsAnonymous { get; set; } = false;
 
+        public string SpecialNotes { get; set; } = string.Empty;
+
         public Guid? CreatedByUserId { get; set; }
+
         public User? CreatedByUser { get; set; }
 
         public ICollection<Step> Steps { get; set; } = [];

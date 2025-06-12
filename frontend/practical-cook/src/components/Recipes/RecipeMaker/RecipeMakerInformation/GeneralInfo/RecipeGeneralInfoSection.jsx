@@ -1,5 +1,3 @@
-import { useContext } from "react";
-import RecipeContext from "../../../context/RecipeContext";
 import {
   Box,
   Field,
@@ -19,9 +17,7 @@ import {
   HiPlus,
 } from "react-icons/hi";
 
-export default function RecipeGeneralSection() {
-  const ctxRecipe = useContext(RecipeContext);
-  const newRecipe = ctxRecipe.recipe;
+export default function RecipeGeneralInfoSection() {
   const difficultyValue = ["Easy", "Medium", "Hard"];
 
   return (
