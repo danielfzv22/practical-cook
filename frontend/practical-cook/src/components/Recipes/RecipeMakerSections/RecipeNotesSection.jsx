@@ -30,7 +30,6 @@ export default function RecipeNotesSection() {
           lineHeight="1.5"
           autoresize
         />
-        <Field.HelperText>Max 500 characters.</Field.HelperText>
       </Field.Root>
     </Box>
   );
