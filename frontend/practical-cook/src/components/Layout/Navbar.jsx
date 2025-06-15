@@ -7,7 +7,6 @@ import {
   Drawer,
   Flex,
   HStack,
-  Icon,
   IconButton,
   Image,
   Spacer,
@@ -18,9 +17,9 @@ import { HiMenu } from "react-icons/hi";
 import { useState } from "react";
 
 const Links = [
-  { name: "Recipes", path: "/" },
-  { name: "Calendar", path: "/" },
-  { name: "Shopping List", path: "/" },
+  { name: "Recipes", path: "/recipes" },
+  { name: "Calendar", path: "/recipes" },
+  { name: "Shopping List", path: "/recipes" },
 ];
 
 export default function Navbar() {

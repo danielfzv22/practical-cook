@@ -1,6 +1,6 @@
 import { createContext, useReducer, useState } from "react";
 
-export const RecipeContext = createContext({
+export const RecipeContextOld = createContext({
   recipe: {
     id: 0,
     name: "",
@@ -190,10 +190,10 @@ export function RecipeContextProvider({ children }) {
   };
 
   return (
-    <RecipeContext.Provider value={recipeContextValues}>
+    <RecipeContextOld.Provider value={recipeContextValues}>
       {children}
-    </RecipeContext.Provider>
+    </RecipeContextOld.Provider>
   );
 }
 
-export default RecipeContext;
+export default RecipeContextOld;

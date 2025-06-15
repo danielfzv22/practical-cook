@@ -1,16 +1,10 @@
-import { useState } from "react";
 import { Box, Editable, Separator, Text, Textarea } from "@chakra-ui/react";
 import { useFormContext } from "react-hook-form";
 
-export default function RecipeTitleSection() {
-  const [title, setTitle] = useState("");
+export default function RecipeTitleSection({ recipeTitle }) {
   const widthRes = { base: "85vw", md: "65vw", lg: "40vw" };
-  const [description, setDescription] = useState("");
 
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext();
+  const { register } = useFormContext();
 
   return (
     <>
@@ -24,16 +18,11 @@ export default function RecipeTitleSection() {
         px={4}
         boxShadow="sm"
       >
-        {errors.ingredients?.[0]?.name && (
-          <Text>{errors.ingredients[0].name.message}</Text>
-        )}
         <Editable.Root
-          value={title}
-          onValueChange={(e) => setTitle(e.value)}
-          placeholder={"Let's give your recipe a Title!"}
+          defaultValue={recipeTitle}
+          placeholder={"Let's give your recipe a Name!"}
           color={"neutral.100"}
           fontSize={"7xl"}
-          {...register("title", { required: "Required" })}
         >
           <Editable.Preview
             maxW={widthRes}
@@ -57,6 +46,7 @@ export default function RecipeTitleSection() {
             textAlign="center"
             bg={"secondary.100"}
             color={"secondary.500"}
+            {...register("name", { required: "Required" })}
           />
         </Editable.Root>
       </Box>
@@ -78,6 +68,7 @@ export default function RecipeTitleSection() {
         maxH="10lh"
         lineHeight="1.2"
         textAlign={"justify"}
+        {...register("description")}
       />
     </>
   );

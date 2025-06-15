@@ -8,6 +8,7 @@ import {
   SegmentGroup,
   Stack,
 } from "@chakra-ui/react";
+import { Controller, useFormContext } from "react-hook-form";
 import {
   HiMinus,
   HiOutlineChartBar,
@@ -18,7 +19,7 @@ import {
 } from "react-icons/hi";
 
 export default function RecipeGeneralInfoSection() {
-  const difficultyValue = ["Easy", "Medium", "Hard"];
+  const { register, control } = useFormContext();
 
   return (
     <Box>
@@ -54,6 +55,7 @@ export default function RecipeGeneralInfoSection() {
                   textAlign={"center"}
                   fontSize={"lg"}
                   borderColor={"secondary.500"}
+                  {...register("preparationTime")}
                 />
               </NumberInput.Root>
             </Field.Root>
@@ -79,10 +81,13 @@ export default function RecipeGeneralInfoSection() {
                       <HiMinus />
                     </IconButton>
                   </NumberInput.DecrementTrigger>
-                  <NumberInput.ValueText
-                    textAlign="center"
-                    fontSize="lg"
-                    minW="3ch"
+                  <NumberInput.Input
+                    width={"25px"}
+                    textAlign={"center"}
+                    fontSize={"lg"}
+                    borderColor={"secondary.500"}
+                    bg={"neutral.100"}
+                    {...register("servings")}
                   />
                   <NumberInput.IncrementTrigger asChild>
                     <IconButton
@@ -111,29 +116,40 @@ export default function RecipeGeneralInfoSection() {
                   textAlign={"center"}
                   fontSize={"lg"}
                   borderColor={"secondary.500"}
+                  {...register("calories")}
                 />
               </NumberInput.Root>
             </Field.Root>
-            <Field.Root>
-              <Field.Label color={"brand.700"} fontSize={"lg"}>
-                <HiOutlineChartBar />
-                Difficulty
-              </Field.Label>
-              <SegmentGroup.Root
-                bgColor={"neutral.100"}
-                defaultValue="Easy"
-                mt={3}
-              >
-                <SegmentGroup.Indicator rounded="5" />
-                <SegmentGroup.Items
-                  bgColor={"secondary.500"}
-                  color={"neutral.100"}
-                  _checked={{ bg: "secondary.700" }}
-                  items={difficultyValue}
-                  rounded={5}
-                />
-              </SegmentGroup.Root>
-            </Field.Root>
+
+            <Controller
+              name="difficulty"
+              control={control}
+              defaultValue={"Easy"}
+              render={({ field }) => (
+                <Field.Root>
+                  <Field.Label color={"brand.700"} fontSize={"lg"}>
+                    <HiOutlineChartBar />
+                    Difficulty
+                  </Field.Label>
+                  <SegmentGroup.Root
+                    value={field.value}
+                    onValueChange={({ value }) => field.onChange(value)}
+                    bgColor={"neutral.100"}
+                    defaultValue="Easy"
+                    mt={3}
+                  >
+                    <SegmentGroup.Indicator rounded="5" />
+                    <SegmentGroup.Items
+                      bgColor={"secondary.500"}
+                      color={"neutral.100"}
+                      _checked={{ bg: "secondary.700" }}
+                      items={["Easy", "Medium", "Hard"]}
+                      rounded={5}
+                    />
+                  </SegmentGroup.Root>
+                </Field.Root>
+              )}
+            />
           </Stack>
         </Fieldset.Content>
       </Fieldset.Root>

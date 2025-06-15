@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Combobox,
   createListCollection,
+  Field,
+  Fieldset,
+  HStack,
+  Input,
+  NativeSelect,
   Portal,
   Span,
   useFilter,
   useListCollection,
   VStack,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import { TbAvocado, TbMeat } from "react-icons/tb";
 import { MdPublic, MdVpnLock } from "react-icons/md";
@@ -14,32 +21,32 @@ import { LuApple, LuCroissant, LuMilk, LuWheat } from "react-icons/lu";
 import { RiDrinks2Line, RiKnifeLine, RiLeafLine } from "react-icons/ri";
 import { GiHerbsBundle, GiHoneyJar, GiKetchup } from "react-icons/gi";
 import { PiAcorn, PiCookie } from "react-icons/pi";
-import { useFieldArray, FormProvider, useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext } from "react-hook-form";
 import AddIngredientPopover from "./AddIngredientPopover";
-import IngredientsSelected from "./IngredientsSelected";
+import { useLoaderData } from "react-router-dom";
 
-const INGREDIENTS_DATA = [
-  { isGlobal: true, id: 1, name: "Chicken breast", type: "Protein" },
-  { isGlobal: true, id: 2, name: "Olive oil", type: "Fat" },
-  { isGlobal: true, id: 3, name: "Garlic", type: "Vegetable" },
-  { isGlobal: true, id: 4, name: "Onion", type: "Vegetable" },
-  { isGlobal: true, id: 5, name: "Tomato", type: "Fruit" },
-  { isGlobal: true, id: 6, name: "Ground beef", type: "Protein" },
-  { isGlobal: true, id: 7, name: "Salt", type: "Condiment" },
-  { isGlobal: true, id: 8, name: "Black pepper", type: "Condiment" },
-  { isGlobal: true, id: 9, name: "Paprika", type: "Condiment" },
-  { isGlobal: true, id: 10, name: "Eggs", type: "Protein" },
-  { isGlobal: false, id: 11, name: "Milk", type: "Dairy" },
-  { isGlobal: true, id: 12, name: "Parmesan cheese", type: "Dairy" },
-  { isGlobal: true, id: 13, name: "Basil", type: "Herbs" },
-  { isGlobal: true, id: 14, name: "Butter", type: "Dairy" },
-  { isGlobal: false, id: 15, name: "Rice", type: "Grain" },
-  { isGlobal: false, id: 16, name: "Lemon juice", type: "Fruit" },
-  { isGlobal: false, id: 17, name: "Soy sauce", type: "Condiment" },
-  { isGlobal: true, id: 18, name: "Spinach", type: "Vegetable" },
-  { isGlobal: true, id: 19, name: "Carrots", type: "Vegetable" },
-  { isGlobal: true, id: 20, name: "Cumin", type: "Condiment" },
-];
+// const INGREDIENTS_DATA = [
+//   { isGlobal: true, id: 1, name: "Chicken breast", type: "Protein" },
+//   { isGlobal: true, id: 2, name: "Olive oil", type: "Fat" },
+//   { isGlobal: true, id: 3, name: "Garlic", type: "Vegetable" },
+//   { isGlobal: true, id: 4, name: "Onion", type: "Vegetable" },
+//   { isGlobal: true, id: 5, name: "Tomato", type: "Fruit" },
+//   { isGlobal: true, id: 6, name: "Ground beef", type: "Protein" },
+//   { isGlobal: true, id: 7, name: "Salt", type: "Condiment" },
+//   { isGlobal: true, id: 8, name: "Black pepper", type: "Condiment" },
+//   { isGlobal: true, id: 9, name: "Paprika", type: "Condiment" },
+//   { isGlobal: true, id: 10, name: "Eggs", type: "Protein" },
+//   { isGlobal: false, id: 11, name: "Milk", type: "Dairy" },
+//   { isGlobal: true, id: 12, name: "Parmesan cheese", type: "Dairy" },
+//   { isGlobal: true, id: 13, name: "Basil", type: "Herbs" },
+//   { isGlobal: true, id: 14, name: "Butter", type: "Dairy" },
+//   { isGlobal: false, id: 15, name: "Rice", type: "Grain" },
+//   { isGlobal: false, id: 16, name: "Lemon juice", type: "Fruit" },
+//   { isGlobal: false, id: 17, name: "Soy sauce", type: "Condiment" },
+//   { isGlobal: true, id: 18, name: "Spinach", type: "Vegetable" },
+//   { isGlobal: true, id: 19, name: "Carrots", type: "Vegetable" },
+//   { isGlobal: true, id: 20, name: "Cumin", type: "Condiment" },
+// ];
 
 export const foodTypes = createListCollection({
   items: [
@@ -61,13 +68,23 @@ export const foodTypes = createListCollection({
 });
 
 export default function RecipeIngredientsSection() {
-  const { register, setValue, getValues } = useFormContext();
+  const { ingredientsData } = useLoaderData();
+  const { control, register, watch, getValues } = useFormContext();
+  const { fields, replace } = useFieldArray({
+    control,
+    name: "recipeIngredients",
+  });
 
-  const [ingredientValue, setIngredientValue] = useState({});
-  const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const selectedIngredients = watch("recipeIngredients") || [];
+  const defaultSelectedValues = selectedIngredients.map((ing) =>
+    String(ing.ingredientId)
+  );
+
+  const [ingredientValue, setIngredientValue] = useState("");
+  //const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   const { contains } = useFilter({ sensitivity: "accent" });
-  const items = INGREDIENTS_DATA.map((ingredient) => ({
+  const items = ingredientsData.data.map((ingredient) => ({
     label: ingredient.name,
     value: String(ingredient.id), // debe ser único y tipo string
     ...ingredient,
@@ -86,7 +103,20 @@ export default function RecipeIngredientsSection() {
   };
 
   const handleValueChange = (e) => {
-    setSelectedIngredients(e.items);
+    const currentValues = getValues("recipeIngredients");
+    const selectedItems = e.items; // todos los seleccionados
+
+    const newFields = selectedItems.map((item) => {
+      const existing = currentValues.find((i) => i.ingredientId === item.id);
+      return {
+        ingredient: { ...item },
+        ingredientId: item.id,
+        measure: existing?.measure || "",
+        quantity: existing?.quantity || "",
+      };
+    });
+
+    replace(newFields);
   };
 
   const handleOnAddNewIngredient = (name, foodType) => {
@@ -104,9 +134,16 @@ export default function RecipeIngredientsSection() {
     return newIngredient;
   };
 
+  const measures = ["Unit", "Cup", "Tbsp", "Tsp", "Gr", "Milliliters", "Piece"];
+
+  const iconFromType = (type) => {
+    const match = foodTypes.items.find((ft) => ft.value === type);
+    return match?.icon || RiKnifeLine;
+  };
   return (
     <VStack>
       <Combobox.Root
+        defaultValue={defaultSelectedValues}
         color={"brand.900"}
         collection={collection}
         onInputValueChange={handleInputChange}
@@ -155,7 +192,51 @@ export default function RecipeIngredientsSection() {
             </Combobox.Content>
           </Combobox.Positioner>
         </Portal>
-        <IngredientsSelected selectedIngredients={selectedIngredients} />
+        <Wrap spacing="4" mt={8}>
+          {fields.map((field, index) => {
+            const Icon = iconFromType(field.ingredient.type);
+            return (
+              <WrapItem key={field.ingredientId} width="30%" m={1}>
+                <Fieldset.Root size="lg">
+                  <Field.Root>
+                    <Field.Label fontSize={"lg"} color={"secondary.700"}>
+                      <Icon />
+                      {field.ingredient.name}
+                    </Field.Label>
+                    <HStack>
+                      <Input
+                        variant="flushed"
+                        width="20px"
+                        placeholder="Qty"
+                        color={"secondary.500"}
+                        fontSize={"sm"}
+                        textAlign={"center"}
+                        borderColor={"secondary.500"}
+                        {...register(`recipeIngredients.${index}.quantity`)}
+                      />
+
+                      <NativeSelect.Root size={"md"} variant={"subtle"}>
+                        <NativeSelect.Field
+                          bg={"neutral.100"}
+                          color={"secondary.500"}
+                          _hover={{ bg: "secondary.500", color: "white" }}
+                          {...register(`recipeIngredients.${index}.measure`)}
+                        >
+                          {measures.map((item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </NativeSelect.Field>
+                        <NativeSelect.Indicator color={"secondary.500"} />
+                      </NativeSelect.Root>
+                    </HStack>
+                  </Field.Root>
+                </Fieldset.Root>
+              </WrapItem>
+            );
+          })}
+        </Wrap>
       </Combobox.Root>
     </VStack>
   );

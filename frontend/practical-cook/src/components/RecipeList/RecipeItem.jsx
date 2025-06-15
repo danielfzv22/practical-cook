@@ -1,23 +1,7 @@
-import { useContext } from "react";
-import RecipeContext from "../../context/RecipeContext";
-import "./RecipeList.css";
-import { fetchRecipeById } from "../../http";
 import { Box, Button, Card, Image, Text } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 export default function RecipeItem({ recipe }) {
-  const ctxRecipe = useContext(RecipeContext);
-
-  async function handleSelectRecipe(id) {
-    const recipe = await fetchRecipeById(id);
-
-    ctxRecipe.editRecipe({
-      ...recipe,
-      prepTime: recipe.preparationTime,
-      instructions: recipe.steps,
-      notes: [],
-    });
-  }
-
   return (
     <Card.Root
       maxW="lg"
@@ -42,12 +26,14 @@ export default function RecipeItem({ recipe }) {
           <Card.Title mb="2" color={"neutral.900"}>
             {recipe.name}
           </Card.Title>
-          <Card.Description>
+          <Card.Description asChild>
             <Text lineClamp="3">{recipe.description}</Text>
           </Card.Description>
         </Card.Body>
         <Card.Footer gap="2">
-          <Button variant="solid">View</Button>
+          <Button variant="solid" asChild>
+            <Link to={`/recipes/${recipe.id}/edit`}>Edit</Link>
+          </Button>
           <Button variant="ghost">Add to my meals</Button>
         </Card.Footer>
       </Box>

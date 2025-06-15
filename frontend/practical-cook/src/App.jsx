@@ -4,9 +4,15 @@ import HomePage from "./pages/Home.jsx";
 import ErrorPage from "./pages/Error.jsx";
 
 import { Provider } from "./components/UI/provider.jsx";
-import { LoadRecipes as recipeLoader } from "./http.js";
+import { checkAuthLoader, LoadRecipes as recipeLoader } from "./util/http.js";
 import LoginPage, { action as loginAction } from "./pages/Login.jsx";
-import RecipeMaker from "./components/Recipes/RecipeMaker/RecipeMaker.jsx";
+import RecipeDetailPage, {
+  loader as recipeDetailLoader,
+} from "./pages/RecipeDetailPage.jsx";
+import RecipeMaker from "./components/Recipes/RecipeMaker.jsx";
+import RecipeEditPage, {
+  loader as recipeEditLoader,
+} from "./pages/RecipeEditPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -15,11 +21,25 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        index: true,
+        path: "/recipes",
         element: <HomePage />,
         loader: recipeLoader,
       },
-      { path: "/recipes/new-recipe", element: <RecipeMaker /> },
+      {
+        path: "/recipes/new-recipe",
+        element: <RecipeMaker />,
+        loader: checkAuthLoader,
+      },
+      {
+        path: "/recipes/:recipeId",
+        element: <RecipeDetailPage />,
+        loader: recipeDetailLoader,
+      },
+      {
+        path: "/recipes/:recipeId/edit",
+        element: <RecipeEditPage />,
+        loader: recipeEditLoader,
+      },
       { path: "/auth", element: <LoginPage />, action: loginAction },
     ],
   },

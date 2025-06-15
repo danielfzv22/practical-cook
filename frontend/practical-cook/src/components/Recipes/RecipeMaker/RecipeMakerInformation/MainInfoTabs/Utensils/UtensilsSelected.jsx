@@ -8,9 +8,9 @@ function UtensilsSelected({ selectedUtensils }) {
           color={"secondary.500"}
           variant={"solid"}
           size={"lg"}
-          key={utensil.id}
+          key={utensil.utensilId}
         >
-          {utensil.name}
+          {utensil.utensil.name}
         </Badge>
       ))}
     </Wrap>

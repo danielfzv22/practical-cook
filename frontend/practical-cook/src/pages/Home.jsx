@@ -1,21 +1,20 @@
 import { RecipeList } from "../components/RecipeList/RecipeList.jsx";
-import backgroundImage from "../assets/choppingBoard.jpg";
 import { RecipeContextProvider } from "../context/RecipeContext.jsx";
 import { Link, useLoaderData } from "react-router-dom";
-import { Box, Button, Flex, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, VStack } from "@chakra-ui/react";
 
 function HomePage() {
-  const res = useLoaderData();
+  const recipe = useLoaderData();
 
-  if (res.isError) {
+  if (recipe.isError) {
     return (
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <h2>Error loading recipes</h2>
-        <p>{res.message}</p>
+        <p>{recipe.message}</p>
       </div>
     );
   }
-  const recipes = res?.data || [];
+  const recipes = recipe?.data || [];
 
   return (
     <RecipeContextProvider>
