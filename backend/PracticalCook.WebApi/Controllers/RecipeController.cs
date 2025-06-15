@@ -100,7 +100,7 @@ namespace PracticalCook.WebApi.Controllers
         }
 
         [Authorize]
-        [HttpPost]
+        [HttpPost("add-onlyRecipeInfo")]
         public async Task<ActionResult<Response<GetRecipeDto>>> AddRecipe([FromBody] AddRecipeDto newRecipe)
         {
             logger.LogInformation("POST /recipes - Adding new recipe: {Name}", newRecipe.Name);
@@ -114,6 +114,39 @@ namespace PracticalCook.WebApi.Controllers
             try
             {
                 var response = await recipeService.AddRecipe(newRecipe, userId);
+                if (!response.Success)
+                    logger.LogWarning("POST /recipes - Failed to add recipe: {Message}", response.Message);
+                else
+                    logger.LogInformation("POST /recipes - Recipe added with ID {Id}", response.Data?.Id);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "POST /recipes - Error adding recipe");
+                return StatusCode(500, new Response<GetRecipeDto>
+                {
+                    Success = false,
+                    Message = "Internal server error."
+                });
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<ActionResult<Response<GetRecipeDto>>> AddFullRecipe([FromBody] AddFullRecipeDto newRecipe)
+        {
+            logger.LogInformation("POST /recipes - Adding new recipe: {Name}", newRecipe.Name);
+
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdString, out Guid userId))
+            {
+                return Unauthorized(new Response<GetRecipeDto> { Success = false, Message = "Invalid user token." });
+            }
+
+            try
+            {
+                var response = await recipeService.AddFullRecipe(newRecipe, userId);
                 if (!response.Success)
                     logger.LogWarning("POST /recipes - Failed to add recipe: {Message}", response.Message);
                 else

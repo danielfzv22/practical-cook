@@ -13,5 +13,7 @@ namespace PracticalCook.Application.Dtos.Ingredient
         public string Name { get; set; } = string.Empty;
 
         public FoodType Type { get; set; }
+
+        public bool IsGlobal { get; set; }
     }
 }

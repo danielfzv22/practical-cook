@@ -9,5 +9,6 @@ namespace PracticalCook.Application.Services.IngredientService
 {
     public interface IIngredientRepository : IGenericRepository<Ingredient>
     {
+        Task<List<Ingredient>> GetUserIngredientsAsync(Guid userId);
     }
 }

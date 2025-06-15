@@ -6,5 +6,7 @@ namespace PracticalCook.Application.Dtos.Recipe
     {
         public GetUtensilDto Utensil { get; set; } = new GetUtensilDto();
 
+        public int UtensilId { get; set; }
+
     }
 }

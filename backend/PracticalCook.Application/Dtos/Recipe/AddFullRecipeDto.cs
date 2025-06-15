@@ -1,15 +1,15 @@
-using PraticalCook.Domain.Entities.Enumerations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using PraticalCook.Domain.Entities;
+using PraticalCook.Domain.Entities.Enumerations;
 
 namespace PracticalCook.Application.Dtos.Recipe
 {
-    public class GetRecipeDto
+    public class AddFullRecipeDto
     {
-        public int Id { get; set; }
-
         public string Name { get; set; } = string.Empty;
 
         public string Description { get; set; } = string.Empty;
@@ -24,11 +24,10 @@ namespace PracticalCook.Application.Dtos.Recipe
 
         public int PreparationTime { get; set; }
 
-        public List<GetRecipeIngredientDto> RecipeIngredients { get; set; } = new List<GetRecipeIngredientDto>();
+        public List<AddRecipeIngredientDto> RecipeIngredients { get; set; } = [];
 
-        public List<GetRecipeUtensilDto> RecipeUtensils { get; set; } = new List<GetRecipeUtensilDto>();
+        public List<AddRecipeUtensilDto> RecipeUtensils { get; set; } = [];
 
-        public List<GetRecipeStepDto> Steps { get; set; } = new List<GetRecipeStepDto>();
-
+        public List<AddRecipeStepDto> Steps { get; set; } = [];
     }
 }

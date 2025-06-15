@@ -45,6 +45,38 @@ namespace PracticalCook.Application.Services.RecipeService
             return response;
         }
 
+        public async Task<Response<GetRecipeDto>> AddFullRecipe(AddFullRecipeDto newRecipe, Guid userId)
+        {
+            var response = new Response<GetRecipeDto>();
+            try
+            {
+                var user = await userRepository.GetByGuidAsync(userId) ?? throw new Exception($"User with id {userId} not found!");
+                var recipe = mapper.Map<Recipe>(newRecipe);
+                recipe.CreatedByUser = user;
+
+                await recipeRepository.AddAsync(recipe);
+
+                user.CreatedRecipes.Add(recipe);
+                var userRecipe = new UserRecipe
+                {
+                    UserId = user.Id,
+                    RecipeId = recipe.Id
+                };
+
+                user.UserRecipes.Add(userRecipe);
+                await userRepository.UpdateAsync(user);
+
+                response.Data = mapper.Map<GetRecipeDto>(recipe);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
         public async Task<Response<List<GetRecipeDto>>> AddMultipleRecipes(List<AddRecipeDto> newRecipes)
         {
             var response = new Response<List<GetRecipeDto>>();

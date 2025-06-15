@@ -1,12 +1,9 @@
-import { useContext } from "react";
-import RecipeContext from "../../../context/RecipeContext";
 import { Box, Field, Textarea } from "@chakra-ui/react";
+import { useFormContext } from "react-hook-form";
 
 export default function RecipeNotesSection() {
-  const listLimit = 5;
-  const ctxRecipe = useContext(RecipeContext);
-  const newRecipe = ctxRecipe.recipe;
-  const hasNotes = newRecipe.notes.length > 0;
+  const { register } = useFormContext();
+
   return (
     <Box mt={10}>
       <Field.Root>
@@ -29,6 +26,7 @@ export default function RecipeNotesSection() {
           maxH="10lh"
           lineHeight="1.5"
           autoresize
+          {...register("specialNotes")}
         />
       </Field.Root>
     </Box>

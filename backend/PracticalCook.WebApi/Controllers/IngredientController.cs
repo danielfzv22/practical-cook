@@ -18,7 +18,13 @@ namespace PracticalCook.WebApi.Controllers
             logger.LogInformation("GET /ingredients - Fetching all ingredients");
             try
             {
-                var response = await ingredientService.GetIngredients();
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdString, out Guid userId))
+                {
+                    userId = Guid.NewGuid();
+                }
+
+                var response = await ingredientService.GetIngredients(userId);
                 var count = response.Data?.Count ?? 0;
 
                 if (count == 0)

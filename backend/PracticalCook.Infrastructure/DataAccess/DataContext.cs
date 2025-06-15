@@ -1,9 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using PraticalCook.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PracticalCook.Infrastructure.DataAccess
 {
@@ -23,8 +19,6 @@ namespace PracticalCook.Infrastructure.DataAccess
         public DbSet<RecipeIngredient> RecipeIngredients => Set<RecipeIngredient>();
 
         public DbSet<RecipeUtensil> RecipeUtensils => Set<RecipeUtensil>();
-
-        public DbSet<Step> RecipeSteps => Set<Step>();
 
         public DbSet<Utensil> Utensils => Set<Utensil>();
 

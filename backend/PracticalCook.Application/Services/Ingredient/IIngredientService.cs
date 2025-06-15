@@ -9,7 +9,7 @@ namespace PracticalCook.Application.Services.IngredientService
 {
     public interface IIngredientService
     {
-        Task<Response<List<GetIngredientDto>>> GetIngredients();
+        Task<Response<List<GetIngredientDto>>> GetIngredients(Guid userId);
 
         Task<Response<GetIngredientDto>> GetIngredientById(int id);
 

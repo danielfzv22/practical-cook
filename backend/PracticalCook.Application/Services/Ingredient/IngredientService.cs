@@ -69,12 +69,12 @@ namespace PracticalCook.Application.Services.IngredientService
             return response;
         }
 
-        public async Task<Response<List<GetIngredientDto>>> GetIngredients()
+        public async Task<Response<List<GetIngredientDto>>> GetIngredients(Guid userId)
         {
             var response = new Response<List<GetIngredientDto>>();
             try
             {
-                var ingredients = await ingredientRepository.GetAllAsync();
+                var ingredients = await ingredientRepository.GetUserIngredientsAsync(userId);
                 response.Data = ingredients.Select(i => mapper.Map<GetIngredientDto>(i)).ToList();
             }
             catch (Exception ex)

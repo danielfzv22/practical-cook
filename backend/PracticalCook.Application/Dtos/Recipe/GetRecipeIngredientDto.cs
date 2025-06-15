@@ -7,6 +7,8 @@ namespace PracticalCook.Application.Dtos.Recipe
     {
         public GetIngredientDto Ingredient { get; set; } = new GetIngredientDto();
 
+        public int IngredientId { get; set; }
+
         public double Quantity { get; set; }
 
         public Measurement Measure { get; set; }

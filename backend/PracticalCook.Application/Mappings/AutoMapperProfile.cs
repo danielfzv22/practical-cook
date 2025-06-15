@@ -13,6 +13,7 @@ namespace PracticalCook.Application.Mappings
         {
             CreateMap<Recipe, GetRecipeDto>();
             CreateMap<AddRecipeDto, Recipe>();
+            CreateMap<AddFullRecipeDto, Recipe>();
 
             CreateMap<Ingredient, GetIngredientDto>();
             CreateMap<AddIngredientDto, Ingredient>();

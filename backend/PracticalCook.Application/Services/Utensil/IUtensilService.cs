@@ -9,7 +9,7 @@ namespace PracticalCook.Application.Services.UtensilService
 {
     public interface IUtensilService
     {
-        Task<Response<List<GetUtensilDto>>> GetUtensils();
+        Task<Response<List<GetUtensilDto>>> GetUtensils(Guid userId);
 
         Task<Response<GetUtensilDto>> GetUtensilById(int id);
 
