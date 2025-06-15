@@ -9,5 +9,6 @@ namespace PracticalCook.Application.Services.UtensilService
 {
     public interface IUtensilRepository : IGenericRepository<Utensil>
     {
+        Task<List<Utensil>> GetUserUtensilsAsync(Guid userId);
     }
 }

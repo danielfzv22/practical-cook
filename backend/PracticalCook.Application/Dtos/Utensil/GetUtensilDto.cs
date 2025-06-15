@@ -10,5 +10,7 @@ namespace PracticalCook.Application.Dtos.Utensil
         public int Id { get; set; }
 
         public string Name { get; set; } = string.Empty;
+
+        public bool IsGlobal { get; set; }
     }
 }

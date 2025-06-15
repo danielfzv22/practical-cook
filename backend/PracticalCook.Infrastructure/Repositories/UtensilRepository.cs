@@ -1,4 +1,5 @@
-﻿using PracticalCook.Application.Services.UtensilService;
+﻿using Microsoft.EntityFrameworkCore;
+using PracticalCook.Application.Services.UtensilService;
 using PracticalCook.Infrastructure.DataAccess;
 using PraticalCook.Domain.Entities;
 using System;
@@ -11,5 +12,19 @@ namespace PracticalCook.Infrastructure.Repositories
 {
     public class UtensilRepository(DataContext context) : GenericRepository<Utensil>(context), IUtensilRepository
     {
+        public async Task<List<Utensil>> GetUserUtensilsAsync(Guid userId)
+        {
+            var utensils = await _dbSet.Where(i => i.IsGlobal).ToListAsync();
+            var user = await _context.Users
+               .Include(u => u.UserUtensils)
+               .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user != null)
+            {
+                utensils.AddRange(user.UserUtensils);
+            }
+
+            return utensils;
+        }
     }
 }

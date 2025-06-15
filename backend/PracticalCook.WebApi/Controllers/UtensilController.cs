@@ -18,7 +18,13 @@ namespace PracticalCook.WebApi.Controllers
             logger.LogInformation("GET /utensils - Fetching all utensils");
             try
             {
-                var response = await utensilService.GetUtensils();
+                var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!Guid.TryParse(userIdString, out Guid userId))
+                {
+                    userId = Guid.NewGuid();
+                }
+
+                var response = await utensilService.GetUtensils(userId);
                 var count = response.Data?.Count ?? 0;
 
                 if (count == 0)

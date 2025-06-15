@@ -69,12 +69,12 @@ namespace PracticalCook.Application.Services.UtensilService
             return response;
         }
 
-        public async Task<Response<List<GetUtensilDto>>> GetUtensils()
+        public async Task<Response<List<GetUtensilDto>>> GetUtensils(Guid userId)
         {
             var response = new Response<List<GetUtensilDto>>();
             try
             {
-                var utensils = await utensilRepository.GetAllAsync();
+                var utensils = await utensilRepository.GetUserUtensilsAsync(userId);
                 response.Data = utensils.Select(i => mapper.Map<GetUtensilDto>(i)).ToList();
             }
             catch (Exception ex)
