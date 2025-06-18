@@ -1,5 +1,6 @@
 import { useRouteError } from "react-router-dom";
 import Navbar from "../components/Layout/Navbar";
+import { Box, Heading, Text } from "@chakra-ui/react";
 
 function ErrorPage() {
   const error = useRouteError();
@@ -21,8 +22,14 @@ function ErrorPage() {
     <>
       <main>
         <Navbar />
-        <h1>{title}</h1>
-        <p>{message}</p>
+        <Box m={5} p={5} alignItems={"center"} bg={"whiteAlpha.900"}>
+          <Heading fontSize={"3xl"} color={"neutral.900"}>
+            {title}
+          </Heading>
+          <Text fontSize={"xl"} color={"neutral.900"}>
+            {message}
+          </Text>
+        </Box>
       </main>
     </>
   );

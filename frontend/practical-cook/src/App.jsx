@@ -4,43 +4,55 @@ import HomePage from "./pages/Home.jsx";
 import ErrorPage from "./pages/Error.jsx";
 
 import { Provider } from "./components/UI/provider.jsx";
-import { checkAuthLoader, LoadRecipes as recipeLoader } from "./util/http.js";
+import { LoadRecipes as recipeLoader, tokenLoader } from "./util/http.js";
 import LoginPage, { action as loginAction } from "./pages/Login.jsx";
 import RecipeDetailPage, {
   loader as recipeDetailLoader,
 } from "./pages/RecipeDetailPage.jsx";
-import RecipeMaker from "./components/Recipes/RecipeMaker.jsx";
-import RecipeEditPage, {
-  loader as recipeEditLoader,
-} from "./pages/RecipeEditPage.jsx";
+import RecipeEditPage from "./pages/RecipeEditPage.jsx";
+import RecipeNewPage from "./pages/RecipeNewPage.jsx";
+import { action as logoutAction } from "./pages/logout.js";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
+    id: "root",
+    loader: tokenLoader,
     children: [
       {
-        path: "/recipes",
-        element: <HomePage />,
-        loader: recipeLoader,
+        path: "recipes",
+        children: [
+          {
+            index: true,
+            element: <HomePage />,
+            loader: recipeLoader,
+          },
+          {
+            path: ":recipeId",
+            id: "recipe-detail",
+            loader: recipeDetailLoader,
+            children: [
+              {
+                index: true,
+                element: <RecipeDetailPage />,
+              },
+              {
+                path: "edit",
+                element: <RecipeEditPage />,
+              },
+              {
+                path: "new-recipe",
+                element: <RecipeNewPage />,
+              },
+            ],
+          },
+        ],
       },
-      {
-        path: "/recipes/new-recipe",
-        element: <RecipeMaker />,
-        loader: checkAuthLoader,
-      },
-      {
-        path: "/recipes/:recipeId",
-        element: <RecipeDetailPage />,
-        loader: recipeDetailLoader,
-      },
-      {
-        path: "/recipes/:recipeId/edit",
-        element: <RecipeEditPage />,
-        loader: recipeEditLoader,
-      },
-      { path: "/auth", element: <LoginPage />, action: loginAction },
+
+      { path: "auth", element: <LoginPage />, action: loginAction },
+      { path: "logout", action: logoutAction },
     ],
   },
 ]);

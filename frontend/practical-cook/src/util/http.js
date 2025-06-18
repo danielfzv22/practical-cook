@@ -1,6 +1,7 @@
 import { redirect } from "react-router-dom";
 
 export async function LoadRecipes() {
+  checkAuthLoader();
   const response = await fetch("http://localhost:5086/recipes");
   if (!response.ok) {
     throw new Response(
@@ -76,6 +77,43 @@ export const authFetch = (url, options = {}) => {
   });
 };
 
+export async function fetchRecipe(id) {
+  if (id === "new-recipe") return null;
+
+  const response = await authFetch(`http://localhost:5086/recipes/${id}`);
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({ isError: true, message: "Error loading recipe data" }),
+      { status: 500 }
+    );
+  }
+
+  return await response.json();
+}
+
+export async function fetchUtensils() {
+  const response = await authFetch(`http://localhost:5086/utensils`);
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({ isError: true, message: "Error loading utensils" }),
+      { status: 500 }
+    );
+  }
+
+  return await response.json();
+}
+
+export async function fetchIngredients() {
+  const response = await authFetch(`http://localhost:5086/ingredients`);
+  if (!response.ok) {
+    throw new Response(
+      JSON.stringify({ isError: true, message: "Error loading ingredients" }),
+      { status: 500 }
+    );
+  }
+
+  return await response.json();
+}
 //-----------------------------------------------------------------------------------
 
 export async function updateRecipeGeneral(recipe) {

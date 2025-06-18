@@ -11,7 +11,7 @@ import { MdPublic, MdVpnLock } from "react-icons/md";
 import AddUtensilPopover from "./AddUtensilPopover";
 import UtensilsSelected from "./UtensilsSelected";
 import { useFormContext } from "react-hook-form";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useRouteLoaderData } from "react-router-dom";
 
 // const UTENSILS = [
 //   { id: 1, isGlobal: true, name: "Parchment paper" },
@@ -29,7 +29,7 @@ import { useLoaderData } from "react-router-dom";
 // ];
 
 export default function RecipeUtensilsSection() {
-  const { utensilsData } = useLoaderData();
+  const { utensilsData } = useRouteLoaderData("recipe-detail");
   const { setValue, watch } = useFormContext();
   const selectedUtensils = watch("recipeUtensils") || [];
   const defaultSelectedValues = selectedUtensils.map((ute) =>

@@ -85,7 +85,7 @@ export default function RecipeInstructionsSection() {
       <HStack wrap="wrap">
         <Button
           onClick={() =>
-            append({ order: fields.length, title: "", description: "" })
+            append({ stepOrder: fields.length, title: "", description: "" })
           }
         >
           <HiPlus />

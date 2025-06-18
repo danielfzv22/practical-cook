@@ -4,7 +4,7 @@ import { useState } from "react";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import { motion } from "motion/react";
 
-export function RecipeList({ recipes, fallbackText, isLoading, loadingText }) {
+export function RecipeList({ recipes }) {
   const [page, setPage] = useState(1);
   const pageSize = 4;
   const startRange = (page - 1) * pageSize;
@@ -19,13 +19,14 @@ export function RecipeList({ recipes, fallbackText, isLoading, loadingText }) {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, ease: "easeInOut" }}
       >
-        <Stack p={6} gap={10} m={5} direction={"horizontal"}>
+        <Stack p={4} gap={5} m={5} direction={"horizontal"}>
           {paginatedRecipes.map((recipe) => (
             <RecipeItem key={recipe.id} recipe={recipe} onSelect={() => {}} />
           ))}
         </Stack>
       </motion.div>
       <Pagination.Root
+        w={"100vh"}
         bg={"whiteAlpha.900"}
         p={3}
         count={recipes.length}
@@ -39,10 +40,15 @@ export function RecipeList({ recipes, fallbackText, isLoading, loadingText }) {
               <HiChevronLeft />
             </IconButton>
           </Pagination.PrevTrigger>
-
           <Pagination.Items
+            color={"secondary.500"}
             render={(page) => (
-              <IconButton variant={{ base: "ghost", _selected: "outline" }}>
+              <IconButton
+                variant={{
+                  base: "ghost",
+                  _selected: "outline",
+                }}
+              >
                 {page.value}
               </IconButton>
             )}

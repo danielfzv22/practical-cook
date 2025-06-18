@@ -23,7 +23,7 @@ import { GiHerbsBundle, GiHoneyJar, GiKetchup } from "react-icons/gi";
 import { PiAcorn, PiCookie } from "react-icons/pi";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import AddIngredientPopover from "./AddIngredientPopover";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useRouteLoaderData } from "react-router-dom";
 
 // const INGREDIENTS_DATA = [
 //   { isGlobal: true, id: 1, name: "Chicken breast", type: "Protein" },
@@ -67,8 +67,19 @@ export const foodTypes = createListCollection({
   ],
 });
 
+const measures = [
+  { id: 0, label: "Unit" },
+  { id: 1, label: "Cup" },
+  { id: 2, label: "Tbsp" },
+  { id: 3, label: "Tsp" },
+  { id: 4, label: "Gr" },
+  { id: 5, label: "Milliliters" },
+  { id: 6, label: "Piece" },
+];
+
 export default function RecipeIngredientsSection() {
-  const { ingredientsData } = useLoaderData();
+  const { ingredientsData } = useRouteLoaderData("recipe-detail");
+
   const { control, register, watch, getValues } = useFormContext();
   const { fields, replace } = useFieldArray({
     control,
@@ -133,8 +144,6 @@ export default function RecipeIngredientsSection() {
     setIngredients((prev) => [...prev, newIngredient]);
     return newIngredient;
   };
-
-  const measures = ["Unit", "Cup", "Tbsp", "Tsp", "Gr", "Milliliters", "Piece"];
 
   const iconFromType = (type) => {
     const match = foodTypes.items.find((ft) => ft.value === type);
@@ -223,8 +232,12 @@ export default function RecipeIngredientsSection() {
                           {...register(`recipeIngredients.${index}.measure`)}
                         >
                           {measures.map((item) => (
-                            <option key={item} value={item}>
-                              {item}
+                            <option
+                              key={item.id}
+                              value={item.id}
+                              label={item.label}
+                            >
+                              {item.label}
                             </option>
                           ))}
                         </NativeSelect.Field>

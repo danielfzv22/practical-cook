@@ -3,6 +3,8 @@ import { Flex, VStack } from "@chakra-ui/react";
 import { useForm, FormProvider } from "react-hook-form";
 import RecipeControls from "./RecipeMaker/RecipeControls";
 import RecipeMakerInformation from "./RecipeMaker/RecipeMakerInformation/RecipeMakerInformation";
+import { redirect } from "react-router-dom";
+import { getAuthToken } from "../../util/http";
 
 const stepsDefault = [
   { stepOrder: 0, title: "Before Starting", description: "" },
@@ -12,6 +14,7 @@ const stepsDefault = [
 ];
 
 const difficultyValue = ["Easy", "Medium", "Hard"];
+
 export default function RecipeMaker({ recipe }) {
   const defaultRecipe = !recipe
     ? {
@@ -24,6 +27,8 @@ export default function RecipeMaker({ recipe }) {
   const methods = useForm({
     defaultValues: { ...defaultRecipe },
   });
+
+  const recipeName = !recipe ? "" : recipe.name;
 
   const onSubmit = (data) => {
     const difficultyEnum = {
@@ -46,8 +51,23 @@ export default function RecipeMaker({ recipe }) {
         quantity: i.quantity,
       })),
     };
-    // Enviar cleanData al backend
-    console.log("Recipe submitted", cleanData);
+
+    const token = getAuthToken();
+
+    if (!token) {
+      return redirect("/auth?mode=login");
+    }
+
+    fetch("http://localhost:5086/recipes", {
+      method: "POST",
+      body: JSON.stringify(cleanData),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    return redirect("/recipes");
   };
 
   return (
@@ -66,7 +86,7 @@ export default function RecipeMaker({ recipe }) {
               animation: "fade-in 300ms ease-out",
             }}
           >
-            <RecipeTitleSection recipeTitle={recipe.name} />
+            <RecipeTitleSection recipeTitle={recipeName} />
             <RecipeMakerInformation />
             <RecipeControls />
           </VStack>

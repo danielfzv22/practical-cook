@@ -1,22 +1,23 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useRouteLoaderData } from "react-router-dom";
 import RecipeMaker from "../components/Recipes/RecipeMaker";
+import { fetchIngredients, fetchRecipe, fetchUtensils } from "../util/http";
 
 function RecipeDetailPage() {
-  const res = useLoaderData();
-  return <RecipeMaker recipe={res.data} />;
+  const { recipe } = useRouteLoaderData("recipe-detail");
+  const recipeData = !recipe ? "" : recipe.data;
+  return <RecipeMaker recipe={recipeData} />;
 }
 
 export default RecipeDetailPage;
 
-export async function loader({ request, params }) {
-  const id = params.recipeId;
-  const response = await fetch(`http://localhost:5086/recipes/${id}`);
+export async function loader({ params }) {
+  const { recipeId } = params;
 
-  if (!response.ok) {
-    throw new Response(
-      JSON.stringify({ isError: true, message: "Failed to fetch recipes" }),
-      { status: 500 }
-    );
-  }
-  return response;
+  const [recipe, utensilsData, ingredientsData] = await Promise.all([
+    fetchRecipe(recipeId),
+    fetchUtensils(),
+    fetchIngredients(),
+  ]);
+
+  return { recipe, utensilsData, ingredientsData };
 }
