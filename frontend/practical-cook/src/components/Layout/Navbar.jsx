@@ -1,8 +1,9 @@
-import { NavLink } from "react-router-dom";
+import { Form, NavLink, useRouteLoaderData } from "react-router-dom";
 import logo from "../../assets/PC.png";
 import {
   Avatar,
   Box,
+  Button,
   CloseButton,
   Drawer,
   Flex,
@@ -23,6 +24,8 @@ const Links = [
 ];
 
 export default function Navbar() {
+  const token = useRouteLoaderData("root");
+
   const [open, setOpen] = useState(false);
 
   return (
@@ -34,7 +37,7 @@ export default function Navbar() {
           display={{ base: "none", md: "flex" }}
           w="100%"
         >
-          <NavLink to="/">
+          <NavLink to="/recipes">
             <Image
               size="md"
               src={logo}
@@ -43,76 +46,93 @@ export default function Navbar() {
               fit={"cover"}
             />
           </NavLink>
-          {Links.map((link) => (
-            <NavLink key={link.name} to={link.path}>
-              <Text
-                fontSize={"xl"}
-                color={"white"}
-                _hover={{ textDecoration: "underline" }}
-              >
-                {link.name}
-              </Text>
-            </NavLink>
-          ))}
+          {token &&
+            Links.map((link) => (
+              <NavLink key={link.name} to={link.path}>
+                <Text
+                  fontSize={"xl"}
+                  color={"white"}
+                  _hover={{ textDecoration: "underline" }}
+                >
+                  {link.name}
+                </Text>
+              </NavLink>
+            ))}
           <Spacer />
           <NavLink to="/Auth?mode=login">
             <Avatar.Root colorPalette={"green"} size={"lg"} bg={"neutral.900"}>
               <Avatar.Fallback />
             </Avatar.Root>
           </NavLink>
+          {token && (
+            <Form action="/logout" method="post">
+              <button>Logout</button>
+            </Form>
+          )}
         </HStack>
-        <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
-          <Drawer.Backdrop />
-          <Drawer.Trigger asChild>
-            <IconButton
-              color={"neutral.100"}
-              bg={"brand.900"}
-              size="md"
-              aria-label="Open Menu"
-              display={{ md: "none" }}
-            >
-              <HiMenu />
-            </IconButton>
-          </Drawer.Trigger>
-          <Drawer.Positioner>
-            <Drawer.Content>
-              <Drawer.Body>
-                <Stack gap={8}>
-                  <NavLink to="/Auth?mode=login">
-                    <Avatar.Root
-                      colorPalette={"green"}
-                      size={"lg"}
-                      bg={"neutral.900"}
-                    >
-                      <Avatar.Fallback />
-                    </Avatar.Root>
-                  </NavLink>
-                  {Links.map((link) => (
-                    <NavLink key={link.name} to={link.path}>
+        {token && (
+          <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)}>
+            <Drawer.Backdrop />
+            <Drawer.Trigger asChild>
+              <IconButton
+                color={"neutral.100"}
+                bg={"brand.900"}
+                size="md"
+                aria-label="Open Menu"
+                display={{ md: "none" }}
+              >
+                <HiMenu />
+              </IconButton>
+            </Drawer.Trigger>
+            <Drawer.Positioner>
+              <Drawer.Content>
+                <Drawer.Body>
+                  <Stack gap={8}>
+                    <NavLink to="/Auth?mode=login">
+                      <Avatar.Root
+                        colorPalette={"green"}
+                        size={"lg"}
+                        bg={"neutral.900"}
+                      >
+                        <Avatar.Fallback />
+                      </Avatar.Root>
+                    </NavLink>
+                    {Links.map((link) => (
+                      <NavLink key={link.name} to={link.path}>
+                        <Text
+                          fontSize={"xl"}
+                          color={"white"}
+                          _hover={{ textDecoration: "underline" }}
+                        >
+                          {link.name}
+                        </Text>
+                      </NavLink>
+                    ))}
+                    <Form action="/logout" method="post">
                       <Text
                         fontSize={"xl"}
                         color={"white"}
                         _hover={{ textDecoration: "underline" }}
                       >
-                        {link.name}
+                        Logout
                       </Text>
-                    </NavLink>
-                  ))}
-                </Stack>
-              </Drawer.Body>
-              <Drawer.CloseTrigger asChild>
-                <IconButton
-                  color={"neutral.100"}
-                  bg={"brand.900"}
-                  size="md"
-                  aria-label="Close Menu"
-                >
-                  <CloseButton />
-                </IconButton>
-              </Drawer.CloseTrigger>
-            </Drawer.Content>
-          </Drawer.Positioner>
-        </Drawer.Root>
+                    </Form>
+                  </Stack>
+                </Drawer.Body>
+                <Drawer.CloseTrigger asChild>
+                  <IconButton
+                    color={"neutral.100"}
+                    bg={"brand.900"}
+                    size="md"
+                    aria-label="Close Menu"
+                  >
+                    <CloseButton />
+                  </IconButton>
+                </Drawer.CloseTrigger>
+              </Drawer.Content>
+            </Drawer.Positioner>
+          </Drawer.Root>
+        )}
       </Flex>
     </Box>
   );

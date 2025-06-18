@@ -5,8 +5,26 @@ import { TbSalt } from "react-icons/tb";
 import RecipeIngredientsSection from "./Ingredients/RecipeIngredientsSection";
 import RecipeInstructionsSection from "./Instrucctions/RecipeInstructionsSection";
 import RecipeUtensilsSection from "./Utensils/RecipeUtensilsSection";
+import { useEffect, useState } from "react";
 
 function RecipeMainInfoTabs() {
+  const [utensils, setUtensils] = useState();
+  const [ingredients, setIngredients] = useState();
+  useEffect(() => {
+    const fetchUtensils = async () => {
+      try {
+        const res = await fetch("http://localhost:5086/utensils"); // Ajusta la URL a tu backend
+        const data = await res.json();
+
+        setUtensils(data.data);
+      } catch (error) {
+        console.error("Error loading utensils:", error);
+      }
+    };
+
+    fetchUtensils();
+  }, [RecipeUtensilsSection]);
+
   return (
     <Box>
       <Tabs.Root defaultValue="Instruccions" p={5} variant="plain" fitted>
@@ -48,7 +66,7 @@ function RecipeMainInfoTabs() {
           <RecipeIngredientsSection />
         </Tabs.Content>
         <Tabs.Content value="Utensils" minH={"20vw"}>
-          <RecipeUtensilsSection />
+          <RecipeUtensilsSection utensilsData={utensils} />
         </Tabs.Content>
       </Tabs.Root>
     </Box>

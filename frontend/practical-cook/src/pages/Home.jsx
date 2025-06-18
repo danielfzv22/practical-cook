@@ -20,12 +20,11 @@ function HomePage() {
     <RecipeContextProvider>
       <Flex align="center" justify="center">
         <VStack
-          m={10}
-          gap={4}
+          w={{ base: "90vw", lg: "75vw" }}
+          m={5}
           p={4}
           bg="rgba(255, 255, 255, 0.75)"
           borderRadius={"md"}
-          w={"100%"}
         >
           <Box textAlign={"center"}>
             <Button
@@ -38,6 +37,7 @@ function HomePage() {
             </Button>
           </Box>
           <Box
+            alignSelf={"flex-start"}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -45,7 +45,12 @@ function HomePage() {
               justifyContent: "space-between",
             }}
           >
-            <Heading size={"5xl"} color={"neutral.900"}>
+            <Heading
+              p={2}
+              alignSelf={"inherit"}
+              size={"5xl"}
+              color={"neutral.900"}
+            >
               Top recipes
             </Heading>
             <RecipeList
